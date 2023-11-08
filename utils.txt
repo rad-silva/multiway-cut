@@ -1,0 +1,5 @@
+Comando de compilação
+$ g++-12 -std=c++20 -I brkga_mp_ipr_cpp/brkga_mp_ipr test.cpp -o test > list.txt
+
+
+export PATH=$PATH:/home/ricardo/Downloads/multiway/src
