@@ -66,8 +66,16 @@ INCLUDES = \
 # Objects.
 OBJS = \
 	./mcp/mcp_instance.o \
-	./decoders/mcp_decoder_threshould.o \
-	./decoders/mcp_decoder_multiple_threshoulds.o
+	./decoders/mcp_decoder_threshold.o \
+	./decoders/mcp_decoder_multiple_thresholds.o \
+	./decoders/mcp_decoder_kruskal.o \
+	./decoders/mcp_decoder_kruskal_perturbation.o \
+	./decoders/mcp_decoder_cuts.o \
+	./execute_decoders.o \
+	./max_flow/graph.o \
+	./max_flow/highest_push_relabel.o \
+	./max_flow/list_node_height.o \
+	./max_flow/priority_queue.o
 
 # Main files.
 MAIN_MCP_OBJ = main_mcp.o
@@ -82,12 +90,12 @@ MAIN_MCP_EXE = main_mcp
 CXX = g++
 # CXX = clang++
 
-USER_FLAGS += -std=c++20
+USER_FLAGS += -std=c++20 -g
 
 # Compiler flags for debugging
 ifneq ($(OPT), opt)
 	USER_FLAGS += -ggdb3 -fexceptions -fno-omit-frame-pointer \
-		-fno-optimize-sibling-calls -fno-inline
+		-fno-optimize-sibling-calls -fno-inline 
 else
 	USER_FLAGS += -O3 -fomit-frame-pointer -funroll-loops
 	ifeq ($(CXX), g++)

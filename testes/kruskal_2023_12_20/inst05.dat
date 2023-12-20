@@ -1,0 +1,12 @@
+Valid Solution: yes
+Best cost: 4
+Last update iteration: 1
+Last update time: 0.0701239s
+Final iteration: 446
+Final time: 30.0112s
+Num edges cut: 4
+Edges removed:
+1 2 1
+1 3 1
+2 4 1
+3 4 1

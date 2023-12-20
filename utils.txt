@@ -3,3 +3,16 @@ $ g++-12 -std=c++20 -I brkga_mp_ipr_cpp/brkga_mp_ipr test.cpp -o test > list.txt
 
 
 export PATH=$PATH:/home/ricardo/Downloads/multiway/src
+
+./main_mcp 20 ./config.conf 50 ../instances/inst04.dat single_t ../testes/solution_inst04.dat
+
+ valgrind --leak-check=full ./main_mcp 20 ./config.conf 20 ../instances/inst04.dat cuts ../testes/cuts_inst04.dat > out
+20 ./config.conf 20 ../instances/inst03.dat cuts ../testes/cuts_inst03.dat
+
+# apresentar as informações em relação ao grafo originial
+  custo e viabilidade
+
+
+  Geração que encontrou a solução
+  Tempo
+  Geração final

@@ -1,0 +1,28 @@
+Valid Solution: yes
+Best cost: 59
+Last update iteration: 2
+Last update time: 0.195654s
+Final iteration: 340
+Final time: 30.0639s
+Num edges cut: 20
+Edges removed:
+20 48 2
+20 34 10
+27 34 4
+30 34 2
+41 47 7
+21 22 2
+22 40 8
+18 28 1
+25 41 5
+39 44 3
+20 22 2
+29 33 7
+22 41 8
+2 19 5
+2 21 7
+5 28 8
+4 36 6
+22 43 7
+41 44 7
+45 47 10

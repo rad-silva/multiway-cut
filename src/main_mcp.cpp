@@ -1,7 +1,4 @@
-#include "mcp/mcp_instance.hpp"
-#include "decoders/mcp_decoder_threshould.hpp"
-#include "decoders/mcp_decoder_multiple_threshoulds.hpp"
-#include "brkga_mp_ipr.hpp"
+#include "execute_decoders.hpp"
 
 #include <iostream>
 #include <string>
@@ -9,19 +6,16 @@
 
 using namespace std;
 
-// #define single_t
-#define multi_t
-
-
 //-------------------------------[ Main ]------------------------------------//
 
 int main(int argc, char* argv[])
 {
-    if(argc < 2) {
+    if(argc < 7) {
         cerr
         << "Usage: " << argv[0]
         << " <seed> <config-file> <maximum-running-time>"
-        << " <tsp-instance-file>"
+        << " <mcp-instance-file> <type-file> <decoder-name>"
+        << " <output-file>"
         << endl;
         return 1;
     }
@@ -30,70 +24,39 @@ int main(int argc, char* argv[])
         ////////////////////////////////////////
         // Read command-line arguments and the instance
         ////////////////////////////////////////
-
         const unsigned seed = stoi(argv[1]);
         const string config_file = argv[2];
+        const unsigned max_run_time = stoi(argv[3]);
         const string instance_file = argv[4];
+        const unsigned type_file = stoi(argv[5]);
+        const string decoder_name = argv[6];
+        const string output_file_name = argv[7];
         const unsigned num_threads = 1;
 
-        cout << "Reading data..." << endl;
-        auto instance = MCP_Instance(instance_file);
+        if (decoder_name == "max_flow") {
 
-        // instance.show();
-
-        ////////////////////////////////////////
-        // Read algorithm parameters
-        ////////////////////////////////////////
-
-        cout << "Reading parameters..." << endl;
-
-        auto [brkga_params, control_params] =
-            BRKGA::readConfiguration(config_file);
-
-        // Overwrite the maximum time from the config file.
-        control_params.maximum_running_time = chrono::seconds {stoi(argv[3])};
-
-        ////////////////////////////////////////
-        // Build the BRKGA data structures
-        ////////////////////////////////////////
-
-        cout << "Building BRKGA data and initializing..." << endl;
-
-        # if defined single_t
-        MCP_Decoder decoder(instance);
-
-        unsigned chromossome_size = (instance.num_nodes * (instance.num_nodes - 1)) / 2;
-
-        BRKGA::BRKGA_MP_IPR<MCP_Decoder> algorithm(
-            decoder, BRKGA::Sense::MINIMIZE, seed,
-            chromossome_size, brkga_params, num_threads
-        );
-        # endif
-
-        # if defined multi_t
-        MCP_Decoder_Multiple_Threshoulds decoder(instance);
-
-        unsigned chromossome_size = instance.num_nodes + 1;
-
-        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Multiple_Threshoulds> algorithm(
-            decoder, BRKGA::Sense::MINIMIZE, seed,
-            chromossome_size, brkga_params, num_threads
-        );
-        # endif
-
-        ////////////////////////////////////////
-        // Find good solutions / evolve
-        ////////////////////////////////////////
-
-        cout << "Running for " << control_params.maximum_running_time << "..."
-             << endl;
-
-        const auto final_status = algorithm.run(control_params, &cout);
-
-        cout
-        << "\nAlgorithm status: " << final_status
-        << "\n\nBest cost: " << final_status.best_fitness
-        << endl;
+        }
+        else if (decoder_name == "single_t") {
+            execute_single_t(seed, config_file, max_run_time, instance_file, type_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "multiple_t") {
+            execute_multiple_t(seed, config_file, max_run_time, instance_file, type_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "kruskal") {
+            execute_kruskal(seed, config_file, max_run_time, instance_file, type_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "kruskal_pert") {
+            execute_kruskal_pert(seed, config_file, max_run_time, instance_file, type_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "cuts") {
+            execute_cuts(seed, config_file, max_run_time, instance_file, type_file, output_file_name, num_threads);
+        }
+        else {
+            cerr
+            << "Specified decoder not listed: "
+            << "<single_t> <multiple_t> <kruskal> <kruskal_pert> <cuts>"
+            << endl;
+        }
     }
     catch(exception& e) {
         cerr

@@ -33,7 +33,7 @@ public:
     unsigned cumulative_edge_cost;
 
     /// Representation of edges: make_pair(destination_node, capacity)
-    typedef std::pair<unsigned, unsigned> edge;
+    typedef struct {unsigned dst; unsigned cost;} edge;
 
     /// Graph in adjascency list representation.
     std::vector<std::vector<edge>> G;
@@ -43,7 +43,7 @@ public:
 
 public:
     /// Default Constructor.
-    MCP_Instance(const std::string& filename);
+    MCP_Instance(const std::string& filename, unsigned type_file);
 
     /// Map edge
     /// \brief given the labels i and j, calculates the index p
@@ -51,17 +51,11 @@ public:
     /// \param i node label
     /// \param j node label
     /// \return index 
-    unsigned map_edge(unsigned i, unsigned j) const;
 
-    /// Unmap index:
-    /// \brief given index p of a vector, calculates the label of
-    /// the nodes corresponding to the arc represented by this index.
-    /// \param p node label
-    /// \return i,j labes nodes
-    // unsigned unmap_index(unsigned p);
+    int get_edge_index(unsigned u, unsigned v) const;
 
     /// Show graph
-    void show();
+    void show() const;
 };
 
 #endif // MCP_INSTANCE_HPP_
