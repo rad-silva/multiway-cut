@@ -43,9 +43,9 @@ public:
   long get_num_gaps() { return num_gaps; };
   long get_time_execution() { return time_execution; };
 
-  void add_edge(int u, int v, double cost);
+  void add_edge(int u, int v, double cost, unsigned index);
 
-  struct edge { int src; int dst; };
+  struct edge { int src; int dst; unsigned index; };
   std::vector<edge> get_edges_cut();
 
   void print_local();

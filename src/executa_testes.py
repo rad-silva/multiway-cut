@@ -25,32 +25,34 @@
 import os
 from datetime import datetime
 
+#---------------------[Parâmetros para alteração]---------------------------------
 
-# ["single_t", "multiple_t", "kruskal", "kruskal_pert", "cuts"]
-method = ["single_t", "multiple_t", "kruskal", "kruskal_pert"]
-extension_file = ".txt"
+# ["singleT", "multipleT", "kruskal", "kruskalPert", "cuts"]
+method = ["singleT", "multipleT", "kruskal", "kruskalPert", "cuts"]
 
+# Diretórios utilizados
+instances_path = "../instances/teste"
+testes_path =  "../testes"
+extension_file = ".max"
+
+# Argumentos de execução
+# <main-file> <seed> <config-file> <maximum-running-time>
+# <mcp-instance-file> <method> <result-file>
+main_file = "./main_mcp"
+seed = "20"
+config_file = "./config.conf"
+maximum_run_time = "2400"
+type_file = "2"
+
+#---------------------------------------------------------------------------------
 
 # Data atual do sistema
 data_atual = datetime.now()
 
 formato_data = "%Y_%m_%d"
+
 date = data_atual.strftime(formato_data)
 
-
-# Diretórios utilizados
-atual_path = os.path.dirname(os.path.abspath(__file__))
-instances_path = os.path.abspath(os.path.join(atual_path, os.pardir)) + "/instances"
-testes_path =  os.path.abspath(os.path.join(atual_path, os.pardir)) + "/testes"
-
-
-# Argumentos de execução
-# <main-file> <seed> <config-file> <maximum-running-time> <mcp-instance-file> <method> <result-file>
-main_file = atual_path + "/main_mcp"
-seed = "20"
-config_file = atual_path + "/config.conf"
-maximum_run_time = "30"
-type_file = "1"
 
 # Coleta as instâncias de <instances_path>
 instances_names = [f for f in os.listdir(instances_path) if os.path.isfile(os.path.join(instances_path, f))]
@@ -72,7 +74,10 @@ for mtd in method:
   # Executa programa para cada uma das instâncias
   for i in instances_names:
     comando = mainScript.replace("$instance", instances_path + "/" + i)
-    comando = comando.replace("$teste", testes_path + "/" + teste_name + "/" + i)
+
+    out_file = i.split(".")[0] + ".sol"
+
+    comando = comando.replace("$teste", testes_path + "/" + teste_name + "/" + out_file)
 
     print(comando)
     os.system(comando)

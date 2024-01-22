@@ -66,16 +66,17 @@ INCLUDES = \
 # Objects.
 OBJS = \
 	./mcp/mcp_instance.o \
-	./decoders/mcp_decoder_threshold.o \
-	./decoders/mcp_decoder_multiple_thresholds.o \
+	./decoders/mcp_decoder_single_t.o \
+	./decoders/mcp_decoder_multi_t.o \
 	./decoders/mcp_decoder_kruskal.o \
-	./decoders/mcp_decoder_kruskal_perturbation.o \
+	./decoders/mcp_decoder_kruskal_pert.o \
 	./decoders/mcp_decoder_cuts.o \
-	./execute_decoders.o \
 	./max_flow/graph.o \
 	./max_flow/highest_push_relabel.o \
 	./max_flow/list_node_height.o \
-	./max_flow/priority_queue.o
+	./max_flow/priority_queue.o \
+	./execute_decoders.o \
+	./write_file.o
 
 # Main files.
 MAIN_MCP_OBJ = main_mcp.o

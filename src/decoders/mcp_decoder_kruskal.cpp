@@ -16,7 +16,8 @@ MCP_Decoder_Kruskal::MCP_Decoder_Kruskal(const MCP_Instance &_instance) :
     instance(_instance),
     list_edges(instance.num_edges)
 {
-    unsigned u, v, cost, e = 0;
+    unsigned u, v, cost;
+    unsigned edge_position = 0;
 
     /// Inserts each edge into a list
     for (u = 1; u <= instance.num_nodes; u++)
@@ -30,8 +31,8 @@ MCP_Decoder_Kruskal::MCP_Decoder_Kruskal(const MCP_Instance &_instance) :
 
             if (u < v)
             { // does not insert reverse arcs
-                list_edges[e] = {u, v, cost};
-                e++;
+                list_edges[edge_position] = {u, v, cost};
+                edge_position++;
             }
         }
     }
@@ -47,6 +48,7 @@ BRKGA::fitness_t MCP_Decoder_Kruskal::decode(Chromosome &chromosome, bool /* not
     /// Copy vector of edges
     vector<edge> edges = list_edges;
 
+    /// Structures for union-find
     std::vector<unsigned> component(instance.num_nodes + 1, 0);
     std::vector<int> terminal(instance.num_nodes + 1, -1);
     std::vector<unsigned> rank(instance.num_nodes + 1, 0);

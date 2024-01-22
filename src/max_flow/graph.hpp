@@ -17,6 +17,7 @@ public:
     int destNode = 0;
     double flow = 0, capacity = 0;
     edge *next = nullptr, *reverse = nullptr;
+    unsigned index = 0;
   };
 
 private:
@@ -30,7 +31,7 @@ public:
   Graph(const Graph &other);
   ~Graph();
 
-  void add_edge_with_reverse(int u, int v, double capacity);
+  void add_edge_with_reverse(int u, int v, double capacity, unsigned index);
   void add_flow(int u, int v, double flow);
   void add_capacity(int u, int v, double capacityEdit);
   void zera_flow();

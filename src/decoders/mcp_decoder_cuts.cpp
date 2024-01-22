@@ -16,42 +16,32 @@ using namespace BRKGA;
 
 MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) : 
     instance(_instance),
-    init_adjascency_list(instance.num_nodes + 1, -1),
+    init_adjacency_list(instance.num_nodes + 1, -1),
     position_edge_vector(instance.num_edges * 2, -1)
 {
-    /// \brief Go through the adjoining list of each node in the order
-    /// u = 1,...n. For an edge (u,v), if u > v, the arc (v,u) has
-    /// already been analyzed, so the position that (u,v) will be mapped
-    /// to in the vector must be the same as that defined for (v,u).
-    /// In the opposite case, the arc (u,v) is defined normally,
-    /// discounting the cases where two equal edges have already occurred.
-
-    unsigned index = 0, discount = 0, edge_list_position, v;
-
-    for (unsigned u = 1; u <= instance.num_nodes; u++)
-    {
-        init_adjascency_list[u] = index;
+    unsigned list_position = 0;
+    unsigned edge_position = 0;
+    unsigned u, v;
+    
+    for (u = 1; u <= instance.num_nodes; u++) {
+        init_adjacency_list[u] = list_position;
 
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
 
-        for (unsigned i = 0; i < u_list.size(); i++)
-        {
+        for (unsigned i = 0; i < u_list.size(); i++) {
             v = u_list[i].dst;
 
-            if (u > v)
-            {
-                edge_list_position = instance.get_edge_index(v, u);
-                position_edge_vector[index + i] = position_edge_vector[init_adjascency_list[v] + edge_list_position];
-                discount++;
+            if (u < v) {
+                position_edge_vector[list_position + i] = edge_position;
+                edge_position++;
             }
-            else
-            {
-                edge_list_position = i;
-                position_edge_vector[index + i] = index + edge_list_position - discount;
+            else { // The position of (u,v) in the vector has already been previously determined from (v,u)
+                position_edge_vector[list_position + i] = 
+                    position_edge_vector[init_adjacency_list[v] + instance.get_edge_index(v,u)];
             }
         }
 
-        index += instance.G[u].size();
+        list_position += u_list.size();
     }
 }
 
@@ -66,8 +56,9 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     // costs of the arcs perturbed by the chromosome
     //////////////////////////////////////////////////
 
-    unsigned u, v, cost, edge_index = 0;
-    MCP_Instance::edge e;
+    unsigned u, v, cost; 
+    unsigned edge_index;
+    MCP_Instance::edge edge_e;
 
     // the n+1 vertex will be used as an auxiliary node to perform the cuts
     Graph G(instance.num_nodes + 1);
@@ -76,14 +67,13 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     {
         for (unsigned i = 0; i < instance.G[u].size(); i++)
         {
-            e = instance.G[u][i];
-            v = e.dst;
-            cost = e.cost;
+            edge_e = instance.G[u][i];
+            v = edge_e.dst;
+            cost = edge_e.cost;
 
-            if (u < v)
-            {
-                G.add_edge_with_reverse(u, v, (cost * chromosome[edge_index]));
-                edge_index++;
+            if (u < v) {
+                edge_index = position_edge_vector[init_adjacency_list[u] + i];
+                G.add_edge_with_reverse(u, v, (cost * chromosome[edge_index]), i);
             }
         }
     }
@@ -106,12 +96,14 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
         {
             if (sj != si)
             {
-                solver.add_edge(sj, t, std::numeric_limits<double>::max());
+                solver.add_edge(sj, t, std::numeric_limits<double>::max(), 0);
             }
         }
 
         // Run algorithm that calculates the maximum flow
         solver.solve(si, t);
+
+        cout << "cut " << si << ": " << solver.get_max_flow() << endl; 
 
         // Store de edges cut
         cuts.push_back(solver.get_edges_cut());
@@ -124,17 +116,13 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
 
     /// Number of cuts an edge is part of
     std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
-    unsigned edge_list_position;
 
     for (unsigned i = 0; i < cuts.size(); i++)
     {
         for (highest_push_relabel_max_flow::edge e : cuts[i])
         {
-            edge_list_position = instance.get_edge_index(e.src, e.dst);
-
             /// Compute the edge index
-            edge_index = position_edge_vector[init_adjascency_list[e.src] + edge_list_position];
-
+            edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
 
             /// Increases the number of cuts this edge participates in
             num_cuts_edge[edge_index]++;
@@ -155,15 +143,15 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
 
         for (highest_push_relabel_max_flow::edge e : cuts[i])
         {
-            edge_list_position = instance.get_edge_index(e.src, e.dst);
-
             /// Compute the edge index
-            edge_index = position_edge_vector[init_adjascency_list[e.src] + edge_list_position];
+            edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
 
             if (num_cuts_edge[edge_index] == 1)
-                cost_cut += instance.G[e.src][edge_list_position].cost;
-            if (num_cuts_edge[edge_index] == 2 and e.src < e.dst)
-                accumulated_cost_cuts += instance.G[e.src][edge_list_position].cost;
+                cost_cut += instance.G[e.src][e.index].cost;
+            if (num_cuts_edge[edge_index] == 2) {
+                accumulated_cost_cuts += instance.G[e.src][e.index].cost;
+                num_cuts_edge[edge_index] = -1;
+            }
         }
 
         accumulated_cost_cuts += cost_cut;
@@ -174,5 +162,7 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
         }
     }
 
+    cout << accumulated_cost_cuts - highest_cost << endl;
+    cout << "-----------------------------------|\n\n";
     return accumulated_cost_cuts - highest_cost;
 }

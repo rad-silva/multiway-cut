@@ -262,6 +262,7 @@ operator>>(std::istream& is, durantion_t& duration) {
 INLINE std::ostream&
 operator<<(std::ostream& os, const std::chrono::duration<double>& dur) {
     os << dur.count() << "s";
+    // os << dur.count();
     return os;
 }
 #endif // __clang__

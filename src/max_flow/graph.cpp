@@ -43,14 +43,14 @@ Graph::Graph(const Graph &other) :
     edge *e;
 
     for (e = other.G[u]; e != nullptr; e = e->next) {
-      add_edge_with_reverse(u, e->destNode, e->capacity);
+      add_edge_with_reverse(u, e->destNode, e->capacity, e->index);
     }
   }
 }
 
 // Adiciona um arco com origem u, destino v, e capacidade capacity
 // e seu reverso como origem v, destino u, e capacidade 0
-void Graph::add_edge_with_reverse(int u, int v, double capacity) 
+void Graph::add_edge_with_reverse(int u, int v, double capacity, unsigned index) 
 {
   edge *e;
 
@@ -73,6 +73,7 @@ void Graph::add_edge_with_reverse(int u, int v, double capacity)
     edge *newEdge = new edge;
     newEdge->destNode = v;
     newEdge->capacity = capacity;
+    newEdge->index = index;
 
     newEdge->next = G[u];
     G[u] = newEdge;
@@ -81,6 +82,7 @@ void Graph::add_edge_with_reverse(int u, int v, double capacity)
     edge *reverseEdge = new edge;
     reverseEdge->destNode = u;
     reverseEdge->capacity = capacity;
+    reverseEdge->index = index;
 
     reverseEdge->next = G[v];
     G[v] = reverseEdge;

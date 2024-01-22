@@ -11,20 +11,16 @@ public:
     /// A reference to a TSP instance.
     const MCP_Instance& instance;
 
-    /// Edge index
-    std::vector<unsigned> init_adjascency_list;
+    /// Position of the beginning of the adjacency list of each node in vector
+    std::vector<unsigned> init_adjacency_list;
 
-    /// Edge index
+    /// Position of each edge in the edge vector (mapping 2*m -> m)
     std::vector<unsigned> position_edge_vector;
 
 public:
-    /// \param instance MCP instance.
+    /// Constructor and main function of the decoder
     MCP_Decoder_Cuts(const MCP_Instance& instance);
 
-    /// \param chromosome A vector of doubles represent a problem solution.
-    /// \param rewrite Indicates if the chromosome must be rewritten. Not used
-    ///                this decoder, but keep due to API requirements.
-    /// \return the cost of the tour.
     BRKGA::fitness_t decode(BRKGA::Chromosome& chromosome, bool rewrite);
 };
 

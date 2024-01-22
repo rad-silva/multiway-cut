@@ -184,8 +184,8 @@ void highest_push_relabel_max_flow::print_local( ) {
   std::cout << "-------------------------------\n";
 }
 
-void highest_push_relabel_max_flow::add_edge(int u, int v, double cost) {
-  Gf.add_edge_with_reverse(u, v, cost);
+void highest_push_relabel_max_flow::add_edge(int u, int v, double cost, unsigned index) {
+  Gf.add_edge_with_reverse(u, v, cost, index);
 }
 
 std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::get_edges_cut()
@@ -236,7 +236,10 @@ std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::
         int v = e->destNode;
 
         if (visited[v] == 0) {
-          edges_cuted.push_back(edge{u, v});
+          if (u < v)
+            edges_cuted.push_back(edge{u, v, e->index});
+          else 
+            edges_cuted.push_back(edge{v, u, e->index});
         }
       }
     }
@@ -244,4 +247,3 @@ std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::
 
   return edges_cuted;
 }
-

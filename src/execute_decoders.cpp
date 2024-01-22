@@ -2,12 +2,16 @@
 #include "brkga_mp_ipr.hpp"
 #include "brkga_mp_ipr/chromosome.hpp"
 
-#include "max_flow/graph.hpp"
-#include "decoders/mcp_decoder_threshold.hpp"
-#include "decoders/mcp_decoder_multiple_thresholds.hpp"
+#include "write_file.hpp"
+#include "execute_decoders.hpp"
+
+#include "decoders/mcp_decoder_single_t.hpp"
+#include "decoders/mcp_decoder_multi_t.hpp"
 #include "decoders/mcp_decoder_kruskal.hpp"
-#include "decoders/mcp_decoder_kruskal_perturbation.hpp"
+#include "decoders/mcp_decoder_kruskal_pert.hpp"
 #include "decoders/mcp_decoder_cuts.hpp"
+#include "max_flow/highest_push_relabel.hpp"
+#include "max_flow/graph.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -18,14 +22,13 @@
 
 using namespace std;
 
-//-------------------------------[ Main ]------------------------------------//
+//-------------------------------[ Decoder execution ]------------------------------------//
 
 void execute_single_t(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
     const string instance_file,
-    const unsigned type_file,
     const string output_file_name,
     const unsigned num_threads
 ) {
@@ -38,7 +41,7 @@ void execute_single_t(
 
         cout << "Reading data..." << endl;
 
-        auto instance = MCP_Instance(instance_file, type_file);
+        auto instance = MCP_Instance(instance_file);
 
         ////////////////////////////////////////
         // Read algorithm parameters
@@ -46,8 +49,7 @@ void execute_single_t(
 
         cout << "Reading parameters..." << endl;
 
-        auto [brkga_params, control_params] =
-            BRKGA::readConfiguration(config_file);
+        auto [brkga_params, control_params] = BRKGA::readConfiguration(config_file);
 
         // Overwrite the maximum time from the config file.
         control_params.maximum_running_time = chrono::seconds {max_run_time};
@@ -62,7 +64,7 @@ void execute_single_t(
 
         unsigned chromossome_size = instance.num_edges;
 
-        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Single_Threshold> algorithm(
+        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Single_Threshold> algorithm (
             decoder, BRKGA::Sense::MINIMIZE, seed,
             chromossome_size, brkga_params, num_threads
         );
@@ -71,13 +73,13 @@ void execute_single_t(
         // Find good solutions / evolve
         ////////////////////////////////////////
 
-        cout << "Running for " << control_params.maximum_running_time << "..." << endl;
+        cout << "Running for " << control_params.maximum_running_time << "s..." << endl;
 
         const auto final_status = algorithm.run(control_params, &cout);
 
         cout
         << "\nAlgorithm status: " << final_status
-        << "\n\nBest cost: " << final_status.best_fitness
+        << "\n\nBest cost: " << final_status.best_fitness * instance.cumulative_edge_cost
         << endl;
 
         ////////////////////////////////////////
@@ -86,37 +88,15 @@ void execute_single_t(
 
         unsigned edge_index, v, cost;
 
-        ofstream output_file(output_file_name);
-
-        if (!output_file.is_open()) {
-            cerr << "Erro ao abrir o arquivo " << output_file_name << endl;
-        }
-
-        if (final_status.best_fitness <= 1) {
-            output_file << "Valid Solution: yes" << "\n";
-            output_file << "Best cost: " << final_status.best_fitness * instance.cumulative_edge_cost << "\n";
-        }
-        else {
-            output_file << "Valid Solution: no" << "\n";
-            output_file << "Best cost: " << final_status.best_fitness << "\n";
-        }
-
         unsigned num_edges_cut = 0;
+
+        vector<format_edge> edges_cuted;
 
         for (unsigned i = 0; i < final_status.best_chromosome.size(); i++) {
             if (final_status.best_chromosome[i] > 0.5) {
                 num_edges_cut++;
             }
         }
-
-        output_file << "Last update iteration: " << final_status.last_update_iteration << "\n";
-        output_file << "Last update time: " << final_status.last_update_time << "\n";
-        output_file << "Final iteration: " << final_status.current_iteration << "\n";
-        output_file << "Final time: " << final_status.current_time << "\n";
-
-        output_file << "Num edges cut: " << num_edges_cut << "\n";
-
-        output_file << "Edges removed: " << "\n";
 
         for (unsigned u = 1; u <= instance.num_nodes; u++) {
             std::vector<MCP_Instance::edge> u_list = instance.G[u];
@@ -127,10 +107,32 @@ void execute_single_t(
                 cost = u_list[i].cost;
 
                 if (final_status.best_chromosome[edge_index] > 0.5 && u < v) {
-                    output_file << u << " " << v << " " << cost << "\n";
+                    edges_cuted.push_back(format_edge{u, v, cost});
                 }
             }
         }
+
+        bool is_valid_solution = false;
+
+
+        if (final_status.best_fitness <= 1) {
+            is_valid_solution = true;
+        }
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            is_valid_solution,
+            final_status.best_fitness * instance.cumulative_edge_cost,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
     }
     catch(exception& e) {
         cerr
@@ -142,17 +144,11 @@ void execute_single_t(
 }
 
 
-
-//-------------------------------[ Main ]------------------------------------//
-
-
-
 void execute_multiple_t(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
     const string instance_file,
-    const unsigned type_file,
     const string output_file_name,
     const unsigned num_threads
 ) {
@@ -165,7 +161,7 @@ void execute_multiple_t(
 
         cout << "Reading data..." << endl;
 
-        auto instance = MCP_Instance(instance_file, type_file);
+        auto instance = MCP_Instance(instance_file);
 
         ////////////////////////////////////////
         // Read algorithm parameters
@@ -173,8 +169,7 @@ void execute_multiple_t(
 
         cout << "Reading parameters..." << endl;
 
-        auto [brkga_params, control_params] =
-            BRKGA::readConfiguration(config_file);
+        auto [brkga_params, control_params] = BRKGA::readConfiguration(config_file);
 
         // Overwrite the maximum time from the config file.
         control_params.maximum_running_time = chrono::seconds {max_run_time};
@@ -198,7 +193,7 @@ void execute_multiple_t(
         // Find good solutions / evolve
         ////////////////////////////////////////
 
-        cout << "Running for " << control_params.maximum_running_time << "..." << endl;
+        cout << "Running for " << control_params.maximum_running_time << "s..." << endl;
 
         const auto final_status = algorithm.run(control_params, &cout);
 
@@ -211,21 +206,8 @@ void execute_multiple_t(
         // Save results in file
         ////////////////////////////////////////
 
+        // auxiliar 
         unsigned edge_index, v;
-
-        ofstream output_file(output_file_name);
-
-        if (!output_file.is_open()) {
-            cerr << "Erro ao abrir o arquivo " << output_file_name << endl;
-        }
-
-        output_file << "Valid Solution: yes" << "\n";
-        output_file << "Best cost: " << final_status.best_fitness << "\n";
-
-        output_file << "Last update iteration: " << final_status.last_update_iteration << "\n";
-        output_file << "Last update time: " << final_status.last_update_time << "\n";
-        output_file << "Final iteration: " << final_status.current_iteration << "\n";
-        output_file << "Final time: " << final_status.current_time << "\n";
 
         /// Set of cuts
         std::vector<std::vector<MCP_Decoder_Multiple_Thresholds::edge>> set_cuts;
@@ -286,10 +268,10 @@ void execute_multiple_t(
                     }
                     else {
                         /// Adds the arc to the set
-                        set_edges_out_group.push_back({u, v, u_list[i].cost});
+                        set_edges_out_group.push_back({u, v, u_list[i].cost, i});
 
                         /// Compute the edge index
-                        edge_index = decoder.position_edge_vector[decoder.init_adjascency_list[u] + i];
+                        edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[u] + i];
                         
                         /// Increases the number of cuts this edge participates in
                         num_cuts_edge[edge_index]++;
@@ -314,7 +296,7 @@ void execute_multiple_t(
             const std::vector<MCP_Decoder_Multiple_Thresholds::edge>& cut_edges = set_cuts[i];
 
             for (MCP_Decoder_Multiple_Thresholds::edge e: cut_edges) {
-                edge_index = decoder.position_edge_vector[decoder.init_adjascency_list[e.src] + decoder.get_edge_index(e.src, e.dst)];
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.edge_index];
 
                 if (num_cuts_edge[edge_index] == 1)
                     num_edges_cut++;
@@ -326,26 +308,40 @@ void execute_multiple_t(
             }
         }
 
-        output_file << "Num edges cut:" << " " << num_edges_cut << "\n";
-
-        output_file << "Edges removed:\n";
+        vector<format_edge> edges_cuted;
 
         for (unsigned i = 0; i < set_cuts.size(); i++) {
             
             const std::vector<MCP_Decoder_Multiple_Thresholds::edge>& cut_edges = set_cuts[i];
 
             for (MCP_Decoder_Multiple_Thresholds::edge e: cut_edges) {
-                edge_index = decoder.position_edge_vector[decoder.init_adjascency_list[e.src] + decoder.get_edge_index(e.src, e.dst)];
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.edge_index];
 
                 if (num_cuts_edge[edge_index] == 1)
-                    output_file << e.src << " " << e.dst << " " << e.cost << "\n";
+                    edges_cuted.push_back(format_edge{e.src, e.dst, e.cost});
 
                 else if (num_cuts_edge[edge_index] == IGNORE) {
                     num_cuts_edge[edge_index] = 2; // non-contabilize reverse edge
-                    output_file << e.src << " " << e.dst << " " << e.cost << "\n";
+                    edges_cuted.push_back({e.src, e.dst, e.cost});
                 }
             }
         }
+
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
     }
     catch(exception& e) {
         cerr
@@ -358,14 +354,13 @@ void execute_multiple_t(
 
 
 
-//-------------------------------[ Main ]------------------------------------//
+//-------------------------------[ Decoder execution ]------------------------------------//
 
 void execute_kruskal(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
     const string instance_file,
-    const unsigned type_file,
     const string output_file_name,
     const unsigned num_threads
 ) {
@@ -378,7 +373,7 @@ void execute_kruskal(
 
         cout << "Reading data..." << endl;
 
-        auto instance = MCP_Instance(instance_file, type_file);
+        auto instance = MCP_Instance(instance_file);
 
 
         ////////////////////////////////////////
@@ -427,19 +422,15 @@ void execute_kruskal(
             cerr << "Erro ao abrir o arquivo " << output_file_name << endl;
         }
 
-        output_file << "Valid Solution: yes" << "\n";
-        output_file << "Best cost: " << final_status.best_fitness << "\n";
-
-        output_file << "Last update iteration: " << final_status.last_update_iteration << "\n";
-        output_file << "Last update time: " << final_status.last_update_time << "\n";
-        output_file << "Final iteration: " << final_status.current_iteration << "\n";
-        output_file << "Final time: " << final_status.current_time << "\n";
+        ////////////////////////////////////////
+        // Processing best solution
+        // and save results in file
+        ////////////////////////////////////////
 
         unsigned num_edges_cut = 0;
 
         /// Copy vector of edges
         vector<MCP_Decoder_Kruskal::edge> edges = decoder.list_edges;
-        vector<MCP_Decoder_Kruskal::edge> edges_removed;
 
         std::vector<unsigned> component(instance.num_nodes + 1, 0);
         std::vector<int> terminal(instance.num_nodes + 1, -1);
@@ -471,6 +462,8 @@ void execute_kruskal(
         unsigned u, v, cost;
         unsigned cu, cv;
 
+        vector<format_edge> edges_cuted;
+
         /// Traverses the edge vector by adding the edges that
         /// do not join components with different terminals.
         /// In the opposite case, the edge is added to the cut.
@@ -489,20 +482,26 @@ void execute_kruskal(
                     decoder.union_elements(component, terminal, rank, u, v);
                 else {
                     num_edges_cut++;
-                    edges_removed.push_back({u, v, cost});
+                    edges_cuted.push_back({u, v, cost});
                 }
                     
             }
         }
 
-        output_file << "Num edges cut:" << " " << num_edges_cut << "\n";
-
-        output_file << "Edges removed:\n";
-
-        for (MCP_Decoder_Kruskal::edge e: edges_removed) {
-            output_file << e.src << " " << e.dst << " " << e.cost << "\n";
-        }
-
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
     }
     catch(exception& e) {
         cerr
@@ -513,16 +512,13 @@ void execute_kruskal(
     }
 }
 
-
-//-------------------------------[ Main ]------------------------------------//
-
+//-------------------------------[ Decoder execution ]------------------------------------//
 
 void execute_kruskal_pert(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
     const string instance_file,
-    const unsigned type_file,
     const string output_file_name,
     const unsigned num_threads
 ) {
@@ -535,7 +531,7 @@ void execute_kruskal_pert(
 
         cout << "Reading data..." << endl;
 
-        auto instance = MCP_Instance(instance_file, type_file);
+        auto instance = MCP_Instance(instance_file);
 
 
         ////////////////////////////////////////
@@ -578,21 +574,12 @@ void execute_kruskal_pert(
         << "\n\nBest cost: " << final_status.best_fitness
         << endl;
 
-        ofstream output_file(output_file_name);
+        ////////////////////////////////////////
+        // Processing best solution
+        // and save results in file
+        ////////////////////////////////////////
 
-        if (!output_file.is_open()) {
-            cerr << "Erro ao abrir o arquivo " << output_file_name << endl;
-        }
-
-        output_file << "Valid Solution: yes" << "\n";
-        output_file << "Best cost: " << final_status.best_fitness << "\n";
-
-        output_file << "Last update iteration: " << final_status.last_update_iteration << "\n";
-        output_file << "Last update time: " << final_status.last_update_time << "\n";
-        output_file << "Final iteration: " << final_status.current_iteration << "\n";
-        output_file << "Final time: " << final_status.current_time << "\n";
-
-        vector<MCP_Decoder_Kruskal_Pertubation::edge> edges_removed;
+        vector<format_edge> edges_cuted;
 
         /// Copy vector of edges
         vector<MCP_Decoder_Kruskal_Pertubation::edge> edges = decoder.list_edges;
@@ -647,18 +634,26 @@ void execute_kruskal_pert(
                 else {
                     // uses the original cost
                     num_edges_cut++;
-                    edges_removed.push_back({u, v, cost});
+                    edges_cuted.push_back({u, v, cost});
                 }
             }
         }
 
-        output_file << "Num edges cut:" << " " << num_edges_cut << "\n";
 
-        output_file << "Edges removed:\n";
-
-        for (MCP_Decoder_Kruskal_Pertubation::edge e: edges_removed) {
-            output_file << e.src << " " << e.dst << " " << e.cost << "\n";
-        }
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
 
     }
     catch(exception& e) {
@@ -671,20 +666,18 @@ void execute_kruskal_pert(
 }
 
 
-//-------------------------------[ Main ]------------------------------------//
-
+//-------------------------------[ Decoder execution ]------------------------------------//
 
 void execute_cuts(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
     const string instance_file,
-    const unsigned type_file,
     const string output_file_name,
     const unsigned num_threads
 ) {
     try {
-        cout << "Executing MCP_Decoder_Kruskal" << endl;
+        cout << "Executing MCP_Decoder_Cuts" << endl;
 
         ////////////////////////////////////////
         // Read the instance
@@ -692,7 +685,7 @@ void execute_cuts(
 
         cout << "Reading data..." << endl;
 
-        auto instance = MCP_Instance(instance_file, type_file);
+        auto instance = MCP_Instance(instance_file);
 
 
         ////////////////////////////////////////
@@ -706,6 +699,7 @@ void execute_cuts(
 
         // Overwrite the maximum time from the config file.
         control_params.maximum_running_time = chrono::seconds {max_run_time};
+
 
         ////////////////////////////////////////
         // Build the BRKGA data structures
@@ -722,6 +716,7 @@ void execute_cuts(
             chromossome_size, brkga_params, num_threads
         );
 
+
         ////////////////////////////////////////
         // Find good solutions / evolve
         ////////////////////////////////////////
@@ -737,6 +732,161 @@ void execute_cuts(
         << "\nAlgorithm status: " << final_status
         << "\n\nBest cost: " << final_status.best_fitness
         << endl;
+
+        BRKGA::Chromosome chromosome = final_status.best_chromosome;
+
+        double accumulated_cost_cuts = 0;
+
+        //////////////////////////////////////////////////
+        // creates a residual graph instance with the
+        // costs of the arcs perturbed by the chromosome
+        //////////////////////////////////////////////////
+
+        unsigned u, v, cost, edge_index = 0;
+        MCP_Instance::edge edge_e;
+
+        // the n+1 vertex will be used as an auxiliary node to perform the cuts
+        Graph G(instance.num_nodes + 1);
+
+        for (u = 1; u <= instance.num_nodes; u++)
+        {
+            for (unsigned i = 0; i < instance.G[u].size(); i++)
+            {
+                edge_e = instance.G[u][i];
+                v = edge_e.dst;
+                cost = edge_e.cost;
+
+                if (u < v)
+                {
+                    G.add_edge_with_reverse(u, v, (cost * chromosome[edge_index]), i);
+                    edge_index++;
+                }
+            }
+        }
+
+        //////////////////////////////////////////////////
+        // calculates the cuts that isolate
+        // each si terminal from the others
+        //////////////////////////////////////////////////
+
+        unsigned t = instance.num_nodes + 1;
+
+        vector<vector<highest_push_relabel_max_flow::edge>> cuts;
+
+        for (unsigned si : instance.terminals)
+        {
+            // Create hpr object
+            highest_push_relabel_max_flow solver(G);
+
+            for (unsigned sj : instance.terminals)
+            {
+                if (sj != si)
+                {
+                    solver.add_edge(sj, t, std::numeric_limits<double>::max(), 0);
+                }
+            }
+
+            // Run algorithm that calculates the maximum flow
+            solver.solve(si, t);
+
+            // Store de edges cut
+            cuts.push_back(solver.get_edges_cut());
+        }
+
+        //////////////////////////////////////////////////
+        // Calculates the number of times 
+        // each arc appeared in a cut
+        //////////////////////////////////////////////////
+
+        /// Number of cuts an edge is part of
+        std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
+
+        for (unsigned i = 0; i < cuts.size(); i++)
+        {
+            for (highest_push_relabel_max_flow::edge e : cuts[i])
+            {
+                /// Compute the edge index
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+
+                /// Increases the number of cuts this edge participates in
+                num_cuts_edge[edge_index]++;
+            }
+        }
+
+        //////////////////////////////////////////////////
+        // Calculates the cost of all cuts.
+        // It also calculates the highest real cost cut (only
+        // considering arcs that are part of a single cut)
+        //////////////////////////////////////////////////
+
+        unsigned highest_cost = 0;
+        unsigned index_cut = 0;
+
+        for (unsigned i = 0; i < cuts.size(); i++)
+        {
+            double cost_cut = 0;
+
+            for (highest_push_relabel_max_flow::edge e : cuts[i])
+            {
+                /// Compute the edge index
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+
+                if (num_cuts_edge[edge_index] == 1)
+                    cost_cut += instance.G[e.src][e.index].cost;
+                if (num_cuts_edge[edge_index] == 2) {
+                    accumulated_cost_cuts += instance.G[e.src][e.index].cost;
+                    num_cuts_edge[edge_index] = -1;
+                }
+            }
+
+            accumulated_cost_cuts += cost_cut;
+
+            if (cost_cut > highest_cost)
+            {
+                highest_cost = cost_cut;
+                index_cut = i;
+            }
+        }
+
+        typedef struct {int src; int dst; unsigned cost;} aux_edge;
+        vector<format_edge> edges_cuted;
+        unsigned num_edges_cut = 0;
+
+        // calcula numero de arcos no corte
+        for (unsigned i = 0; i < cuts.size(); i++)
+        {
+            if (i != index_cut) {
+                for (highest_push_relabel_max_flow::edge e : cuts[i])
+                {
+                    /// Compute the edge index
+                    edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+
+                    if (num_cuts_edge[edge_index] == 1) {
+                        edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
+                        num_edges_cut++;
+                    }
+                    if (num_cuts_edge[edge_index] == -1) {
+                        edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
+                        num_edges_cut++;
+                    }
+                }
+            }
+        }
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
 
     }
     catch(exception& e) {
