@@ -2,6 +2,7 @@
 #include <queue>
 #include <algorithm>
 #include <chrono>
+#include <unordered_set>
 
 #include "graph.hpp"
 #include "highest_push_relabel.hpp"
@@ -138,7 +139,7 @@ void highest_push_relabel_max_flow::discharge(int u)
 }
 
 
-int highest_push_relabel_max_flow::solve(int s, int t)
+double highest_push_relabel_max_flow::solve(int s, int t)
 {
   auto start = std::chrono::steady_clock::now();
 
@@ -164,6 +165,7 @@ int highest_push_relabel_max_flow::solve(int s, int t)
   return max_flow;
 }
 
+
 void highest_push_relabel_max_flow::print_local( ) {
   std::cout << "node_excess[";
   for (int u = 0; u <= num_nodes; u++) {
@@ -184,25 +186,41 @@ void highest_push_relabel_max_flow::print_local( ) {
   std::cout << "-------------------------------\n";
 }
 
+
 void highest_push_relabel_max_flow::add_edge(int u, int v, double cost, unsigned index) {
   Gf.add_edge_with_reverse(u, v, cost, index);
 }
 
+
+/*
+  pag 58:
+    "Observe que, a partir do corolário 2.50, se redefinirmos um nó ativo i 
+    como sendo aquele tal que d(i) < n (e ef(i) > 0), então, quando não houver 
+    mais nós ativos, podemos encontrar um corte mínimo s-t procurando o conjunto 
+    S de todos os vértices que não podem alcançar t por meio de arcos em Af (u > 0)."
+
+  **********
+  VER:
+  - chromossomo pode zerar todos os custos
+  - Quando o fluxo = 0 -> corte = arcos que saem de s
+  - Está forçando um corte em s
+  - Se considerar que não possui fluxo -> não separou os terminais
+*/
 std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::get_edges_cut()
 {
-  /// Queue of nodes found
+  /// Fila de nós encontrados
   std::queue<int> queue;
 
-  /// Marker of nodes found
-  std::vector<bool> visited(num_nodes + 1, false);
+  /// Marca os nós que alcançam t
+  std::vector<bool> alcanca_t(num_nodes + 1, false);
   
   /////////////////////////////////////////////////
-  // Breadth-first search to find the nodes
-  // of the same group reachable from the terminal
+  // Busca em largura para encontrar os nós que 
+  // alcançam o terminal t por meio de arcos com u > 0
   /////////////////////////////////////////////////
  
-  visited[src] = true;
-  queue.push(src);
+  alcanca_t[sink] = true;
+  queue.push(sink);
 
   while (!queue.empty()) {
 
@@ -214,8 +232,96 @@ std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::
     for (e = Gf.get_edge(u); e != nullptr; e = e->next){
       int v = e->destNode;
 
-      if (visited[v] == false && e->capacity > 0) {
-        visited[v] = true;
+      // Estamos fazendo a busca de a partir de u
+      // mas queremos saber se v alcança u com u > 0
+      if (alcanca_t[v] == false && e->reverse->capacity > 0) {
+        alcanca_t[v] = true;
+        queue.push(v);
+      }
+    }
+  }
+
+  /////////////////////////////////////////////
+  // Computa os arcos que atravessam os conjuntos
+  // ou seja, (u,v) tal que u não alcança t
+  // e v alcança t.
+  /////////////////////////////////////////////
+
+  std::vector<edge> edges_cuted;
+
+  for (int u = 0; u <= num_nodes; u++) {
+    if (alcanca_t[u] == false) {
+      Graph::edge *e;
+
+      for (e = Gf.get_edge(u); e != nullptr; e = e->next){
+        int v = e->destNode;
+
+        if (alcanca_t[v] == true) {
+          if (u < v)
+            edges_cuted.push_back(edge{u, v, e->index});
+          else 
+            edges_cuted.push_back(edge{v, u, e->index});
+        }
+      }
+    }
+  }
+
+  return edges_cuted;
+}
+
+
+/*
+// /// Marker of nodes found
+  // std::vector<bool> reachable(num_nodes + 1, false);
+  
+  // for (int u = 0; u <= num_nodes; u++){
+  //   reachable[u] = (node_height[u] >= num_nodes);
+  // }
+
+  // std::vector<edge> edges_cuted;
+  // Graph::edge *e;
+
+  // // Iterar sobre todas as arestas e imprimir aquelas que cruzam o corte mínimo
+  // for (int u = 0; u <= num_nodes; u++) {
+  //   for (e = Gf.get_edge(u); e != nullptr; e = e->next) {
+  //       int v = e->destNode;
+
+  //       if (reachable[u] && !reachable[v] && e->capacity > 0) {
+  //           std::cout << u << " -> " << v << " : " << e->capacity << std::endl;
+  //           if (u < v)
+  //             edges_cuted.push_back(edge{u, v, e->index});
+  //           else 
+  //             edges_cuted.push_back(edge{v, u, e->index});
+  //       }
+  //   }
+  // }
+
+  // Queue of nodes found
+  std::queue<int> queue;
+
+  /// Marker of nodes found
+  std::vector<bool> alcança_t(num_nodes + 1, false);
+  
+  /////////////////////////////////////////////////
+  // Breadth-first search to find the nodes
+  // of the same group reachable from the terminal
+  /////////////////////////////////////////////////
+ 
+  alcança_t[sink] = true;
+  queue.push(sink);
+
+  while (!queue.empty()) {
+
+    int u = queue.front();
+    queue.pop();
+      
+    Graph::edge *e;
+
+    for (e = Gf.get_edge(u); e != nullptr; e = e->next){
+      int v = e->destNode;
+
+      if (alcança_t[v] == false && e->reverse->capacity > 0) {
+        alcança_t[v] = true;
         queue.push(v);
       }
     }
@@ -229,13 +335,13 @@ std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::
   std::vector<edge> edges_cuted;
 
   for (int u = 0; u <= num_nodes; u++) {
-    if (visited[u] == true) {
+    if (alcança_t[u] == false) {
       Graph::edge *e;
 
       for (e = Gf.get_edge(u); e != nullptr; e = e->next){
         int v = e->destNode;
 
-        if (visited[v] == 0) {
+        if (alcança_t[v] == true) {
           if (u < v)
             edges_cuted.push_back(edge{u, v, e->index});
           else 
@@ -244,6 +350,80 @@ std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::
       }
     }
   }
+*/
 
-  return edges_cuted;
-}
+/*
+  pag 58:
+    "Observe que, a partir do corolário 2.50, se redefinirmos um nó ativo i 
+    como sendo aquele tal que d(i) < n (e ef(i) > 0), então, quando não houver 
+    mais nós ativos, podemos encontrar um corte mínimo s-t procurando o conjunto 
+    S de todos os vértices que não podem alcançar t por meio de arcos em Af (u > 0)."
+
+  **********
+  VER:
+  - chromossomo pode zerar todos os custos
+  - Quando o fluxo = 0 -> corte = arcos que saem de s
+  - Está forçando um corte em s
+  - Se considerar que não possui fluxo -> não separou os terminais
+*/
+// std::vector<highest_push_relabel_max_flow::edge> highest_push_relabel_max_flow::get_edges_cut()
+// {
+//   Gf.print_grafo();
+  
+//   /// Queue of nodes found
+//   std::queue<int> queue;
+
+//   /// Marker of nodes found
+//   std::vector<bool> visited(num_nodes + 1, false);
+  
+//   /////////////////////////////////////////////////
+//   // Breadth-first search to find the nodes
+//   // of the same group reachable from the terminal
+//   /////////////////////////////////////////////////
+ 
+//   visited[src] = true;
+//   queue.push(src);
+
+//   while (!queue.empty()) {
+
+//     int u = queue.front();
+//     queue.pop();
+      
+//     Graph::edge *e;
+
+//     for (e = Gf.get_edge(u); e != nullptr; e = e->next){
+//       int v = e->destNode;
+
+//       if (visited[v] == false && (e->capacity > 0)) {
+//         visited[v] = true;
+//         queue.push(v);
+//       }
+//     }
+//   }
+
+//   /////////////////////////////////////////////
+//   // 
+//   // 
+//   /////////////////////////////////////////////
+
+//   std::vector<edge> edges_cuted;
+
+//   for (int u = 0; u <= num_nodes; u++) {
+//     if (visited[u] == true) {
+//       Graph::edge *e;
+
+//       for (e = Gf.get_edge(u); e != nullptr; e = e->next){
+//         int v = e->destNode;
+
+//         if (visited[v] == 0) { // and e->flow > 0
+//           if (u < v)
+//             edges_cuted.push_back(edge{u, v, e->index});
+//           else 
+//             edges_cuted.push_back(edge{v, u, e->index});
+//         }
+//       }
+//     }
+//   }
+
+//   return edges_cuted;
+// }

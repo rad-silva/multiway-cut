@@ -6,6 +6,7 @@
 #include <string.h>
 #include <vector>
 #include <chrono>
+#include <iomanip>
 
 
 // Inicializa um grafo sem arcos
@@ -98,6 +99,44 @@ void Graph::add_edge_with_reverse(int u, int v, double capacity, unsigned index)
   }
 }
 
+void Graph::remove_edge_with_reverse(int u, int v) {
+  // Encontrar e remover o arco (u, v) da lista de adjacência de u
+  edge *prev_e = nullptr;
+  edge *curr_e = G[u];
+
+  while (curr_e != nullptr && curr_e->destNode != v) {
+    prev_e = curr_e;
+    curr_e = curr_e->next;
+  }
+
+  if (curr_e != nullptr) {
+    if (prev_e != nullptr)
+      prev_e->next = curr_e->next;
+    else // curr_e é o primeiro arco da lista u
+      G[u] = curr_e->next;
+
+    delete curr_e;
+  }
+
+  // Encontrar e remover o arco reverso (v, u) da lista de adjacência de v
+  prev_e = nullptr;
+  curr_e = G[v];
+
+  while (curr_e != nullptr && curr_e->destNode != u) {
+    prev_e = curr_e;
+    curr_e = curr_e->next;
+  }
+
+  if (curr_e != nullptr) {
+    if (prev_e != nullptr)
+      prev_e->next = curr_e->next;
+    else // curr_e é o primeiro arco da lista de v
+      G[v] = curr_e->next;
+
+    delete curr_e;
+  }
+}
+
 // Acrescenta flow unidades no fluxo atual do arco (u,v)
 void Graph::add_flow(int u, int v, double flow) 
 {
@@ -180,12 +219,23 @@ int Graph::num_edges()
 
 void Graph::print_grafo() 
 {
-  for (int u = 0; u <= n; u++) {
-    edge *e = G[u];
+  std::cout
+  << "Nodes: " << n << std::endl
+  << "Edges: " << m << std::endl;
 
-    while (e != nullptr) {
-      std::cout << "a " << u << " " << e->destNode << " " << e->flow << " " << e->capacity << "\n";
-      e = e->next;
+  std::cout
+  << std::setw(6) << "src"
+  << std::setw(6) << "dest"
+  << std::setw(6) << "flow"
+  << std::setw(6) << "cost" << std::endl;
+
+  for (int u = 0; u <= n; u++) {
+    for (edge *e = G[u]; e != nullptr; e = e->next) {
+      std::cout
+      << std::setw(6) << u
+      << std::setw(6) << e->destNode
+      << std::setw(6) << e->flow
+      << std::setw(18) << e->capacity << std::endl;
     }
   }
   std::cout << "\n";

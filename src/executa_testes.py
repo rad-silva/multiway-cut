@@ -28,12 +28,12 @@ from datetime import datetime
 #---------------------[Parâmetros para alteração]---------------------------------
 
 # ["singleT", "multipleT", "kruskal", "kruskalPert", "cuts"]
-method = ["singleT", "multipleT", "kruskal", "kruskalPert", "cuts"]
+method = ["cuts"]
 
 # Diretórios utilizados
-instances_path = "../instances/teste"
+instances_path = "../instances/steiner2"
 testes_path =  "../testes"
-extension_file = ".max"
+extension_file = ".gr"
 
 # Argumentos de execução
 # <main-file> <seed> <config-file> <maximum-running-time>
@@ -41,8 +41,8 @@ extension_file = ".max"
 main_file = "./main_mcp"
 seed = "20"
 config_file = "./config.conf"
-maximum_run_time = "2400"
-type_file = "2"
+maximum_run_time = "600"
+# type_file = "1"
 
 #---------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ instances_names.sort()
 for mtd in method:
   teste_name = mtd + "_" + date
   mainScript = main_file + " " + seed + " " + config_file + " " \
-              + maximum_run_time + " " + "$instance" + " " + type_file + " " + mtd + " " + "$teste"
+              + maximum_run_time + " " + "$instance" + " " + mtd + " " + "$teste"
 
 
   # Cria a pasta de teste para o método a ser executado

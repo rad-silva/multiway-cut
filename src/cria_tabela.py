@@ -1,6 +1,5 @@
 import os
 from os.path import isfile, join
-import sys
 
 instances_path = "../instances/steiner"
 testes_path = "../testes"
@@ -23,8 +22,8 @@ for teste_name in testes_names:
   data_file_name = testes_path + "/" + teste_name + "/" + decoder_name + ".csv"
   data_file = open(data_file_name, "w")
 
-  print("Instance_name","Valid Solution,Best cost,Last update iteration,Last update time,Final iteration,Final time,Num edges cut")
-  data_file.write("Instance_name,Valid Solution,Best cost,Last update iteration,Last update time,Final iteration,Final time,Num edges cut\n")
+  print("Instance,Nodes,Edges,Terminals,Valid Solution,Best cost,Num edges cut,Last update iteration,Last update time,Final iteration,Final time")
+  data_file.write("Instance,Nodes,Edges,Terminals,Valid Solution,Best cost,Num edges cut,Last update iteration,Last update time,Final iteration,Final time\n")
 
   for i in sol_files_names:
 
@@ -34,7 +33,7 @@ for teste_name in testes_names:
     arquivoDeSolucao = open(path_sol_file_name, "r")
 
     solucao = arquivoDeSolucao.readlines()
-    solucao = solucao[:7]
+    solucao = solucao[:10] # nro de linhas a considerar do arquivo
     
     data = [instance_name] + [line.strip().split(": ")[1] for line in solucao if ":" in line]
     print(",".join(data))

@@ -13,7 +13,7 @@ class highest_push_relabel_max_flow {
   int num_nodes;
 
   int d = 0;
-  long max_flow = 0;
+  double max_flow = 0;
   long num_pushs = 0;
   long num_relabels = 0;
   long num_gaps = 0;
@@ -35,7 +35,7 @@ public:
   // ctor
   highest_push_relabel_max_flow(Graph &G);
 
-  int solve(int s, int t);
+  double solve(int s, int t);
 
   int get_max_flow() { return max_flow; };
   long get_num_pushs() { return num_pushs; };

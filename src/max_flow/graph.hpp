@@ -32,6 +32,7 @@ public:
   ~Graph();
 
   void add_edge_with_reverse(int u, int v, double capacity, unsigned index);
+  void remove_edge_with_reverse(int u, int v);
   void add_flow(int u, int v, double flow);
   void add_capacity(int u, int v, double capacityEdit);
   void zera_flow();

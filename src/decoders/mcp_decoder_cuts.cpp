@@ -12,6 +12,8 @@
 using namespace std;
 using namespace BRKGA;
 
+// int geracao = 0;
+
 //-----------------------------[ Constructor ]--------------------------------//
 
 MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) : 
@@ -48,8 +50,17 @@ MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) :
 //-------------------------------[ Decode ]-----------------------------------//
 
 BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-used */)
-{
+{    
     double accumulated_cost_cuts = 0;
+
+    // cout << geracao/100 << " " << geracao % 100 << endl;
+    // geracao++;
+
+    // cout << "chromossomo: ";
+    // for (double x: chromosome) {
+    //     cout << x << " ";
+    // }
+    // cout << endl << endl;
 
     //////////////////////////////////////////////////
     // creates a residual graph instance with the
@@ -95,15 +106,11 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
         for (unsigned sj : instance.terminals)
         {
             if (sj != si)
-            {
                 solver.add_edge(sj, t, std::numeric_limits<double>::max(), 0);
-            }
         }
 
         // Run algorithm that calculates the maximum flow
         solver.solve(si, t);
-
-        cout << "cut " << si << ": " << solver.get_max_flow() << endl; 
 
         // Store de edges cut
         cuts.push_back(solver.get_edges_cut());
@@ -115,7 +122,7 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     //////////////////////////////////////////////////
 
     /// Number of cuts an edge is part of
-    std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
+    std::vector<int> num_cuts_edge(instance.num_edges, 0);
 
     for (unsigned i = 0; i < cuts.size(); i++)
     {
@@ -132,37 +139,60 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     //////////////////////////////////////////////////
     // Calculates the cost of all cuts.
     // It also calculates the highest real cost cut (only
-    // considering arcs that are part of a single cut)
+    // considering edges that are part of a single cut)
     //////////////////////////////////////////////////
 
-    unsigned highest_cost = 0;
+    unsigned highest_cost_cut = 0;
+    double cost_cut;
+
+    // for (unsigned i = 0; i < cuts.size(); i++)
+    // {
+    //     unsigned custo = 0;
+    //     cout << "corte " << i << ":\n";
+    //     // Computes edges that are part of a single cut
+    //     for (highest_push_relabel_max_flow::edge e : cuts[i])
+    //     {
+    //         edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
+    //         cout << e.src << " " << e.dst << " " << instance.G[e.src][e.index].cost << " " << num_cuts_edge[edge_index] << "x" << endl;
+    //         custo += instance.G[e.src][e.index].cost;
+    //     }
+    //     cout << "custo: " << custo << endl;
+    //     cout << "-----------------------\n";
+    // }
 
     for (unsigned i = 0; i < cuts.size(); i++)
     {
-        double cost_cut = 0;
+        cost_cut = 0;
 
+        // Computes edges that are part of a single cut
         for (highest_push_relabel_max_flow::edge e : cuts[i])
         {
-            /// Compute the edge index
             edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
 
-            if (num_cuts_edge[edge_index] == 1)
+            if (num_cuts_edge[edge_index] == 1){
+                cost_cut += instance.G[e.src][e.index].cost;}
+        }
+
+        
+        if (cost_cut > highest_cost_cut)
+            highest_cost_cut = cost_cut;
+
+        // Computes edges that are part of two cuts
+        for (highest_push_relabel_max_flow::edge e : cuts[i])
+        {
+            edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
+            
+            if (num_cuts_edge[edge_index] >= 2) {
                 cost_cut += instance.G[e.src][e.index].cost;
-            if (num_cuts_edge[edge_index] == 2) {
-                accumulated_cost_cuts += instance.G[e.src][e.index].cost;
-                num_cuts_edge[edge_index] = -1;
+                num_cuts_edge[edge_index] = -1; // mark that the edge has already been computed
             }
         }
 
         accumulated_cost_cuts += cost_cut;
-
-        if (cost_cut > highest_cost)
-        {
-            highest_cost = cost_cut;
-        }
     }
 
-    cout << accumulated_cost_cuts - highest_cost << endl;
-    cout << "-----------------------------------|\n\n";
-    return accumulated_cost_cuts - highest_cost;
+    // cout << highest_cost_cut << endl;
+    // cout << accumulated_cost_cuts << endl << endl;
+
+    return accumulated_cost_cuts - highest_cost_cut;
 }

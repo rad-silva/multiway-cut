@@ -69,6 +69,8 @@ void execute_single_t(
             chromossome_size, brkga_params, num_threads
         );
 
+        algorithm.reset(); // chama #initialize(true)
+
         ////////////////////////////////////////
         // Find good solutions / evolve
         ////////////////////////////////////////
@@ -188,6 +190,8 @@ void execute_multiple_t(
             decoder, BRKGA::Sense::MINIMIZE, seed,
             chromossome_size, brkga_params, num_threads
         );
+
+        algorithm.reset(); // chama #initialize(true)
 
         ////////////////////////////////////////
         // Find good solutions / evolve
@@ -403,6 +407,8 @@ void execute_kruskal(
             chromossome_size, brkga_params, num_threads
         );
 
+        algorithm.reset(); // chama #initialize(true)
+
         ////////////////////////////////////////
         // Find good solutions / evolve
         ////////////////////////////////////////
@@ -561,6 +567,8 @@ void execute_kruskal_pert(
             chromossome_size, brkga_params, num_threads
         );
 
+        algorithm.reset(); // chama #initialize(true)
+
         ////////////////////////////////////////
         // Find good solutions / evolve
         ////////////////////////////////////////
@@ -716,6 +724,7 @@ void execute_cuts(
             chromossome_size, brkga_params, num_threads
         );
 
+        algorithm.reset(); // chama #initialize(true)
 
         ////////////////////////////////////////
         // Find good solutions / evolve
@@ -742,7 +751,8 @@ void execute_cuts(
         // costs of the arcs perturbed by the chromosome
         //////////////////////////////////////////////////
 
-        unsigned u, v, cost, edge_index = 0;
+        unsigned u, v, cost; 
+        unsigned edge_index;
         MCP_Instance::edge edge_e;
 
         // the n+1 vertex will be used as an auxiliary node to perform the cuts
@@ -781,9 +791,7 @@ void execute_cuts(
             for (unsigned sj : instance.terminals)
             {
                 if (sj != si)
-                {
                     solver.add_edge(sj, t, std::numeric_limits<double>::max(), 0);
-                }
             }
 
             // Run algorithm that calculates the maximum flow
@@ -799,7 +807,7 @@ void execute_cuts(
         //////////////////////////////////////////////////
 
         /// Number of cuts an edge is part of
-        std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
+        std::vector<int> num_cuts_edge(instance.num_edges, 0);
 
         for (unsigned i = 0; i < cuts.size(); i++)
         {
@@ -833,19 +841,26 @@ void execute_cuts(
 
                 if (num_cuts_edge[edge_index] == 1)
                     cost_cut += instance.G[e.src][e.index].cost;
-                if (num_cuts_edge[edge_index] == 2) {
-                    accumulated_cost_cuts += instance.G[e.src][e.index].cost;
-                    num_cuts_edge[edge_index] = -1;
-                }
             }
-
-            accumulated_cost_cuts += cost_cut;
 
             if (cost_cut > highest_cost)
             {
                 highest_cost = cost_cut;
                 index_cut = i;
             }
+
+            for (highest_push_relabel_max_flow::edge e : cuts[i])
+            {
+                /// Compute the edge index
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+
+                if (num_cuts_edge[edge_index] >= 2) {
+                    accumulated_cost_cuts += instance.G[e.src][e.index].cost;
+                    num_cuts_edge[edge_index] = -1;
+                }
+            }
+
+            accumulated_cost_cuts += cost_cut;
         }
 
         typedef struct {int src; int dst; unsigned cost;} aux_edge;
@@ -861,12 +876,13 @@ void execute_cuts(
                     /// Compute the edge index
                     edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
 
-                    if (num_cuts_edge[edge_index] == 1) {
+                    if (num_cuts_edge[edge_index] == 1) { // insere o arcos que fazem parte de um unico corte
                         edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
                         num_edges_cut++;
                     }
-                    if (num_cuts_edge[edge_index] == -1) {
+                    if (num_cuts_edge[edge_index] == -1) { // insere o arcos que fazem parte de 2 ou mais cortes apenas uma vez
                         edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
+                        num_cuts_edge[edge_index] == -2; 
                         num_edges_cut++;
                     }
                 }
