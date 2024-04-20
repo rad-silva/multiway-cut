@@ -66,11 +66,14 @@ INCLUDES = \
 # Objects.
 OBJS = \
 	./mcp/mcp_instance.o \
-	./decoders/mcp_decoder_single_t.o \
-	./decoders/mcp_decoder_multi_t.o \
-	./decoders/mcp_decoder_kruskal.o \
-	./decoders/mcp_decoder_kruskal_pert.o \
-	./decoders/mcp_decoder_cuts.o \
+	./decoders/threshold_decoder.o \
+	./decoders/threshold2_decoder.o \
+	./decoders/coloracao_decoder.o \
+	./decoders/coloracao2_decoder.o \
+	./decoders/coloracao3_decoder.o \
+	./decoders/kruskal_decoder.o \
+	./decoders/kruskal_pert_decoder.o \
+	./decoders/multiplos_cortes_decoder.o \
 	./max_flow/graph.o \
 	./max_flow/highest_push_relabel.o \
 	./max_flow/list_node_height.o \

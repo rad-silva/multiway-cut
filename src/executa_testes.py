@@ -24,64 +24,55 @@
 
 import os
 from datetime import datetime
+from pathlib import Path
+from glob import glob
+
 
 #---------------------[Parâmetros para alteração]---------------------------------
 
-# ["singleT", "multipleT", "kruskal", "kruskalPert", "cuts"]
-method = ["cuts"]
+# ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2"]
+DECODERS = ["kruskalpert"]
 
-# Diretórios utilizados
-instances_path = "../instances/steiner2"
-testes_path =  "../testes"
-extension_file = ".gr"
+DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
+INSTANCES_PATH = DEFAULT_PATH / "instances" / "custom"
+TESTES_PATH = DEFAULT_PATH / "testes"
+EXT_FILE = ".gr"
 
-# Argumentos de execução
-# <main-file> <seed> <config-file> <maximum-running-time>
-# <mcp-instance-file> <method> <result-file>
-main_file = "./main_mcp"
-seed = "20"
-config_file = "./config.conf"
-maximum_run_time = "600"
-# type_file = "1"
+MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
+CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
+SEED = "20"
+MAX_RUN_TIME = "20"
 
-#---------------------------------------------------------------------------------
+#---------------------[Execução dos testes automatizados]---------------------------------
 
-# Data atual do sistema
-data_atual = datetime.now()
+def execute_tests():
+    '''
+    ---
+    '''
+    date = datetime.now().strftime("%Y_%m_%d")
 
-formato_data = "%Y_%m_%d"
+    instances = glob(str(INSTANCES_PATH / f"*{EXT_FILE}"))
+    instances.sort()
 
-date = data_atual.strftime(formato_data)
+    for decoder in DECODERS:
+        folder_test = f"{decoder}_{date}"
+        script = f"{MAIN_FILE_PATH} {SEED} {CONFIG_FILE_PATH} {MAX_RUN_TIME} $instance {decoder} $teste"
+
+        teste_dir = TESTES_PATH / folder_test
+        if not teste_dir.exists():
+            print(f"Criando pasta {folder_test}")
+            teste_dir.mkdir(parents=True)
+
+        # Executa programa para cada uma das instâncias
+        for instance in instances:
+            out_file = str(teste_dir / Path(instance).stem) + ".sol"
+            comando = script.replace("$instance", str(INSTANCES_PATH / instance))
+            comando = comando.replace("$teste", str(TESTES_PATH / folder_test / out_file))
+            print(comando)
+            os.system(comando)
+
+        print()
 
 
-# Coleta as instâncias de <instances_path>
-instances_names = [f for f in os.listdir(instances_path) if os.path.isfile(os.path.join(instances_path, f))]
-instances_names = [instance for instance in instances_names if extension_file in instance]
-instances_names.sort()
-
-
-for mtd in method:
-  teste_name = mtd + "_" + date
-  mainScript = main_file + " " + seed + " " + config_file + " " \
-              + maximum_run_time + " " + "$instance" + " " + mtd + " " + "$teste"
-
-
-  # Cria a pasta de teste para o método a ser executado
-  if not os.path.exists(os.path.join(testes_path, teste_name)):
-    print("Criando folder " + teste_name)
-    os.makedirs(os.path.join(testes_path, teste_name))
-
-  # Executa programa para cada uma das instâncias
-  for i in instances_names:
-    comando = mainScript.replace("$instance", instances_path + "/" + i)
-
-    out_file = i.split(".")[0] + ".sol"
-
-    comando = comando.replace("$teste", testes_path + "/" + teste_name + "/" + out_file)
-
-    print(comando)
-    os.system(comando)
-    
-    print()
-
-    
+if __name__ == "__main__":
+    execute_tests()

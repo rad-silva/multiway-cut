@@ -1,43 +1,105 @@
+'''
+  Automatiza a criação de um arquivo csv
+  a partir de arquivos de solução
+'''
+
 import os
 from os.path import isfile, join
 
-instances_path = "../instances/steiner"
-testes_path = "../testes"
-extension_file = ".sol"
+TESTE_PATH = "../testes"
+EXTENSION_FILE = ".sol"
 
-# Lista todas os diretórios contidos em <instances_path>
-testes_names = [d for d in os.listdir(testes_path) if os.path.isdir(join(testes_path, d))]
+def create_table():
+    '''
+        Cria um arquivo csv para cada pasta de teste
+        contendo os dados de cada instância testada 
 
-# Percorre cada um dos testes
-for teste_name in testes_names:
-  print("--" + teste_name)
+        .
+        ├── TEST_PATH
+        │   ├── Test1
+        │   │   ├── instance1
+        │   │   ├── instance2
+        │   │   ├── instancen
+        │   ├── Test2
+        │   │   ├── instance1
+        │   │   ├── instance2
+        │   │   ├── instancen
+    '''
 
-  # Lê todos os arquivos com extensão <extension_file>
-  sol_files_names = [f for f in os.listdir(testes_path + "/" + teste_name) if isfile(join(testes_path+ "/" + teste_name, f))]
-  sol_files_names = [instance for instance in sol_files_names if extension_file in instance]
-  sol_files_names.sort()
-  
-  decoder_name = teste_name.split('_')[0]
+    # Lista todos os diretórios de testes contidos no diretorio <TESTE_PATH>
+    testes_names = [
+        d
+        for d in os.listdir(TESTE_PATH)
+        if os.path.isdir(join(TESTE_PATH, d))
+    ]
 
-  data_file_name = testes_path + "/" + teste_name + "/" + decoder_name + ".csv"
-  data_file = open(data_file_name, "w")
+    for teste_name in testes_names:
 
-  print("Instance,Nodes,Edges,Terminals,Valid Solution,Best cost,Num edges cut,Last update iteration,Last update time,Final iteration,Final time")
-  data_file.write("Instance,Nodes,Edges,Terminals,Valid Solution,Best cost,Num edges cut,Last update iteration,Last update time,Final iteration,Final time\n")
+        # Lista todos os arquivos presentes em /TESTE_PATH/test_name
+        sol_files_names = [
+            f
+            for f in os.listdir(TESTE_PATH + "/" + teste_name)
+            if isfile(join(TESTE_PATH+ "/" + teste_name, f))
+        ]
 
-  for i in sol_files_names:
+        # Mantém apenas os arquivos com extensão <EXTENSION_FILE>
+        sol_files_names = [
+            instance
+            for instance in sol_files_names
+            if EXTENSION_FILE in instance
+        ]
 
-    instance_name = i.split(".")[0]
+        # Ordena os arquivos em ordem crescente
+        sol_files_names.sort()
 
-    path_sol_file_name = testes_path + "/" + teste_name + "/" + i 
-    arquivoDeSolucao = open(path_sol_file_name, "r")
+        # Extrai o nome do decoder utilizado no teste
+        decoder_name = teste_name.split('_')[0]
 
-    solucao = arquivoDeSolucao.readlines()
-    solucao = solucao[:10] # nro de linhas a considerar do arquivo
-    
-    data = [instance_name] + [line.strip().split(": ")[1] for line in solucao if ":" in line]
-    print(",".join(data))
-    data_file.write(",".join(data) + "\n")
+        print(
+            "--" + teste_name + "\n"
+            "Instance,Nodes,Edges,Terminals,Valid Solution,"
+            "Best cost,Num edges cut,Last update iteration,"
+            "Last update time,Final iteration,Final time"
+        )
 
-  print()
-  data_file.close()
+        # Cria e abre o arquivo decoder_name.csv no diretório do teste
+        data_file_name = TESTE_PATH + "/" + teste_name + "/" + decoder_name + ".csv"
+        data_file = open(data_file_name, "w", encoding="utf-8")
+
+        # Grava a linha de cabeçalho no arquivo
+        data_file.write(
+            "Instance,Nodes,Edges,Terminals,Valid Solution,"
+            "Best cost,Num edges cut,Last update iteration,"
+            "Last update time,Final iteration,Final time\n"
+        )
+
+        for i in sol_files_names:
+
+            instance_name = i.split(".")[0]
+
+            path_sol_file_name = TESTE_PATH + "/" + teste_name + "/" + i
+            file_solution = open(path_sol_file_name, "r", encoding="utf-8")
+
+            # Aramazena todas as linhas do arquivo em uma lista
+            solucao = file_solution.readlines()
+
+            # Considera apenas as primeiras 10 linhas do arquivo
+            solucao = solucao[:10]
+
+            # Extrai o conteúdo de cada linha do arquivo (título:conteúdo)
+            data = [instance_name] + [
+                line.strip().split(": ")[1]
+                for line in solucao
+                if ":" in line
+            ]
+
+            # Grava todo o conteúdo separado por vírgula em uma linha no arquivo de saída
+            data_file.write(",".join(data) + "\n")
+
+            print(",".join(data))
+
+        print()
+        data_file.close()
+
+if __name__ == "__main__":
+    create_table()

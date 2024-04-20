@@ -3,13 +3,13 @@
 
 #include <string>
 
-void execute_single_t(
+void execute_threshold(
     const unsigned seed, const std::string config_file, 
     const unsigned max_run_time, const std::string instance_file, 
     std::string output_file_name, const unsigned num_threads
 );
 
-void execute_multiple_t(
+void execute_coloracao(
     const unsigned seed, const std::string config_file,
     const unsigned max_run_time, const std::string instance_file,
     std::string output_file_name, const unsigned num_threads
@@ -27,7 +27,25 @@ void execute_kruskal_pert(
     std::string output_file_name, const unsigned num_threads
 );
 
-void execute_cuts(
+void execute_multiplos_cortes(
+    const unsigned seed, const std::string config_file, 
+    const unsigned max_run_time, const std::string instance_file, 
+    std::string output_file_name, const unsigned num_threads
+);
+
+void execute_coloracao2(
+    const unsigned seed, const std::string config_file, 
+    const unsigned max_run_time, const std::string instance_file, 
+    std::string output_file_name, const unsigned num_threads
+);
+
+void execute_threshold2(
+    const unsigned seed, const std::string config_file, 
+    const unsigned max_run_time, const std::string instance_file, 
+    std::string output_file_name, const unsigned num_threads
+);
+
+void execute_coloracao3(
     const unsigned seed, const std::string config_file, 
     const unsigned max_run_time, const std::string instance_file, 
     std::string output_file_name, const unsigned num_threads

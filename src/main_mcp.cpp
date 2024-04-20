@@ -36,28 +36,34 @@ int main(int argc, char* argv[])
         const string output_file_name = argv[6];
         const unsigned num_threads = 1;
 
-        if (decoder_name == "max_flow") {
-
+        if (decoder_name == "threshold") {
+            execute_threshold(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
         }
-        else if (decoder_name == "singleT") {
-            execute_single_t(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
-        }
-        else if (decoder_name == "multipleT") {
-            execute_multiple_t(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        else if (decoder_name == "coloracao") {
+            execute_coloracao(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
         }
         else if (decoder_name == "kruskal") {
             execute_kruskal(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
         }
-        else if (decoder_name == "kruskalPert") {
+        else if (decoder_name == "kruskalpert") {
             execute_kruskal_pert(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
         }
-        else if (decoder_name == "cuts") {
-            execute_cuts(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        else if (decoder_name == "mcortes") {
+            execute_multiplos_cortes(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "coloracao2") {
+            execute_coloracao2(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "threshold2") {
+            execute_threshold2(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "coloracao3") {
+            execute_coloracao3(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
         }
         else {
             cerr
             << "Specified decoder not listed: "
-            << "<singleT> <multipleT> <kruskal> <kruskalPert> <cuts>"
+            << "<threshold> <coloracao> <kruskal> <kruskalpert> <mcortes> <coloracao2> <threshold2> <coloracao3>"
             << endl;
         }
     }

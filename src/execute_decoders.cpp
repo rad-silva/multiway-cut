@@ -5,11 +5,15 @@
 #include "write_file.hpp"
 #include "execute_decoders.hpp"
 
-#include "decoders/mcp_decoder_single_t.hpp"
-#include "decoders/mcp_decoder_multi_t.hpp"
-#include "decoders/mcp_decoder_kruskal.hpp"
-#include "decoders/mcp_decoder_kruskal_pert.hpp"
-#include "decoders/mcp_decoder_cuts.hpp"
+#include "decoders/threshold_decoder.hpp"
+#include "decoders/coloracao_decoder.hpp"
+#include "decoders/kruskal_decoder.hpp"
+#include "decoders/kruskal_pert_decoder.hpp"
+#include "decoders/multiplos_cortes_decoder.hpp"
+#include "decoders/coloracao2_decoder.hpp"
+#include "decoders/threshold2_decoder.hpp"
+#include "decoders/coloracao3_decoder.hpp"
+
 #include "max_flow/highest_push_relabel.hpp"
 #include "max_flow/graph.hpp"
 
@@ -24,7 +28,7 @@ using namespace std;
 
 //-------------------------------[ Decoder execution ]------------------------------------//
 
-void execute_single_t(
+void execute_threshold(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
@@ -33,7 +37,7 @@ void execute_single_t(
     const unsigned num_threads
 ) {
     try {
-        cout << "Executing MCP_Decoder_Single_Threshold" << endl;
+        cout << "Executing Decoder <threshold>" << endl;
 
         ////////////////////////////////////////
         // Read the instance
@@ -146,7 +150,7 @@ void execute_single_t(
 }
 
 
-void execute_multiple_t(
+void execute_coloracao(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
@@ -155,7 +159,7 @@ void execute_multiple_t(
     const unsigned num_threads
 ) {
     try {
-        cout << "Executing MCP_Decoder_Multiple_Thresholds" << endl;
+        cout << "Executing Decoder <coloracao>" << endl;
 
         ////////////////////////////////////////
         // Read the instance
@@ -369,7 +373,7 @@ void execute_kruskal(
     const unsigned num_threads
 ) {
     try {
-        cout << "Executing MCP_Decoder_Kruskal" << endl;
+        cout << "Executing Decoder <kruskal" << endl;
 
         ////////////////////////////////////////
         // Read the instance
@@ -529,7 +533,7 @@ void execute_kruskal_pert(
     const unsigned num_threads
 ) {
     try {
-        cout << "Executing MCP_Decoder_Kruskal" << endl;
+        cout << "Executing Decoder <kruskalpert>" << endl;
 
         ////////////////////////////////////////
         // Read the instance
@@ -676,7 +680,7 @@ void execute_kruskal_pert(
 
 //-------------------------------[ Decoder execution ]------------------------------------//
 
-void execute_cuts(
+void execute_multiplos_cortes(
     const unsigned seed,
     const string config_file,
     const unsigned max_run_time,
@@ -685,7 +689,7 @@ void execute_cuts(
     const unsigned num_threads
 ) {
     try {
-        cout << "Executing MCP_Decoder_Cuts" << endl;
+        cout << "Executing Decoder <mcortes>" << endl;
 
         ////////////////////////////////////////
         // Read the instance
@@ -904,6 +908,415 @@ void execute_cuts(
             edges_cuted
         );
 
+    }
+    catch(exception& e) {
+        cerr
+        << "\n" << string(40, '*') << "\n"
+        << "Exception Occurred: " << e.what()
+        << "\n" << string(40, '*')
+        << endl;
+    }
+}
+
+
+
+void execute_coloracao2(
+    const unsigned seed,
+    const string config_file,
+    const unsigned max_run_time,
+    const string instance_file,
+    const string output_file_name,
+    const unsigned num_threads
+) {
+    try {
+        cout << "Executing Decoder <coloracao2>" << endl;
+
+        ////////////////////////////////////////
+        // Read the instance
+        ////////////////////////////////////////
+
+        cout << "Reading data..." << endl;
+
+        auto instance = MCP_Instance(instance_file);
+
+        ////////////////////////////////////////
+        // Read algorithm parameters
+        ////////////////////////////////////////
+
+        cout << "Reading parameters..." << endl;
+
+        auto [brkga_params, control_params] = BRKGA::readConfiguration(config_file);
+
+        // Overwrite the maximum time from the config file.
+        control_params.maximum_running_time = chrono::seconds {max_run_time};
+
+        ////////////////////////////////////////
+        // Build the BRKGA data structures
+        ////////////////////////////////////////
+
+        cout << "Building BRKGA data and initializing..." << endl;
+        
+        MCP_Decoder_Coloracao2 decoder(instance);
+
+        unsigned chromossome_size = instance.num_nodes + 1;
+
+        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Coloracao2> algorithm(
+            decoder, BRKGA::Sense::MINIMIZE, seed,
+            chromossome_size, brkga_params, num_threads
+        );
+
+        algorithm.reset(); // chama #initialize(true)
+
+        ////////////////////////////////////////
+        // Find good solutions / evolve
+        ////////////////////////////////////////
+
+        cout << "Running for " << control_params.maximum_running_time << "s..." << endl;
+
+        const auto final_status = algorithm.run(control_params, &cout);
+
+        cout
+        << "\nAlgorithm status: " << final_status
+        << "\n\nBest cost: " << final_status.best_fitness
+        << endl;
+
+        ////////////////////////////////////////
+        // Save results in file
+        ////////////////////////////////////////
+
+        // auxiliar 
+        unsigned edge_index, v;
+
+        /// Set of cuts
+        std::vector<std::vector<MCP_Decoder_Multiple_Thresholds::edge>> set_cuts;
+
+        /// Number of cuts an edge is part of
+        std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
+
+        /// Queue of nodes found
+        std::queue<unsigned> queue;
+
+        /// Marker of nodes found
+        std::vector<bool> visited(instance.num_nodes + 1, false);
+        
+        /////////////////////////////////////////////////
+        // Breadth-first search to find the nodes
+        // of the same group reachable from the terminal
+        /////////////////////////////////////////////////
+
+        /// Stores the group that each node belongs to
+        std::vector<int> group(instance.num_nodes + 1, -1);
+        
+        /// Compute group for non-terminal nodes
+        for (unsigned i = 1; i <= instance.num_nodes; i++) {
+            group[i] = std::floor(final_status.best_chromosome[i] * instance.num_terminals);
+        }
+
+        /// Compute group for terminal nodes
+        for (unsigned i = 0; i < instance.num_terminals; i++) {
+            unsigned s = instance.terminals[i];
+            group[s] = i;
+        }
+
+        for (unsigned s: instance.terminals) {
+                
+            visited[s] = true;
+            queue.push(s);
+
+            /// Store the nodes rechable from s using
+            /// nodes that are part of the same group
+            std::vector<MCP_Decoder_Multiple_Thresholds::edge> set_edges_out_group;
+
+            while (!queue.empty()) {
+
+                unsigned u = queue.front();
+                queue.pop();
+                
+                /// Get the list of edges leaving u
+                const std::vector<MCP_Instance::edge>& u_list = instance.G[u];
+
+                for (unsigned i = 0; i < u_list.size(); i++){
+                    v = u_list[i].dst;
+
+                    if (group[v] == group[u]) {
+                        if (visited[v] == false) {
+                            visited[v] = true;
+                            queue.push(v);
+                        }
+                    }
+                    else {
+                        /// Adds the arc to the set
+                        set_edges_out_group.push_back({u, v, u_list[i].cost, i});
+
+                        /// Compute the edge index
+                        edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[u] + i];
+                        
+                        /// Increases the number of cuts this edge participates in
+                        num_cuts_edge[edge_index]++;
+                    }
+                }
+            }
+
+            set_cuts.push_back(set_edges_out_group);
+        }
+
+        /////////////////////////////////////////////
+        // calculates the actual cost of all cuts
+        // minus the cost of the highest value cut
+        /////////////////////////////////////////////
+
+        /// Marking value for edges already considered in a cut
+        unsigned IGNORE = -1;
+        unsigned num_edges_cut = 0;
+
+        for (unsigned i = 0; i < set_cuts.size(); i++) {
+            
+            const std::vector<MCP_Decoder_Multiple_Thresholds::edge>& cut_edges = set_cuts[i];
+
+            for (MCP_Decoder_Multiple_Thresholds::edge e: cut_edges) {
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.edge_index];
+
+                if (num_cuts_edge[edge_index] == 1)
+                    num_edges_cut++;
+
+                else if (num_cuts_edge[edge_index] == 2) {
+                    num_cuts_edge[edge_index] = IGNORE;
+                    num_edges_cut++; // non-contabilize reverse edge
+                }
+            }
+        }
+
+        vector<format_edge> edges_cuted;
+
+        for (unsigned i = 0; i < set_cuts.size(); i++) {
+            
+            const std::vector<MCP_Decoder_Multiple_Thresholds::edge>& cut_edges = set_cuts[i];
+
+            for (MCP_Decoder_Multiple_Thresholds::edge e: cut_edges) {
+                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.edge_index];
+
+                if (num_cuts_edge[edge_index] == 1)
+                    edges_cuted.push_back(format_edge{e.src, e.dst, e.cost});
+
+                else if (num_cuts_edge[edge_index] == IGNORE) {
+                    num_cuts_edge[edge_index] = 2; // non-contabilize reverse edge
+                    edges_cuted.push_back({e.src, e.dst, e.cost});
+                }
+            }
+        }
+
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
+    }
+    catch(exception& e) {
+        cerr
+        << "\n" << string(40, '*') << "\n"
+        << "Exception Occurred: " << e.what()
+        << "\n" << string(40, '*')
+        << endl;
+    }
+}
+
+
+
+
+
+void execute_threshold2(
+    const unsigned seed,
+    const string config_file,
+    const unsigned max_run_time,
+    const string instance_file,
+    const string output_file_name,
+    const unsigned num_threads
+) {
+    try {
+        cout << "Executing Decoder <threshold2>" << endl;
+
+        ////////////////////////////////////////
+        // Read the instance
+        ////////////////////////////////////////
+
+        cout << "Reading data..." << endl;
+
+        auto instance = MCP_Instance(instance_file);
+
+        ////////////////////////////////////////
+        // Read algorithm parameters
+        ////////////////////////////////////////
+
+        cout << "Reading parameters..." << endl;
+
+        auto [brkga_params, control_params] = BRKGA::readConfiguration(config_file);
+
+        // Overwrite the maximum time from the config file.
+        control_params.maximum_running_time = chrono::seconds {max_run_time};
+
+        ////////////////////////////////////////
+        // Build the BRKGA data structures
+        ////////////////////////////////////////
+
+        cout << "Building BRKGA data and initializing..." << endl;
+
+        MCP_Decoder_Threshold2 decoder(instance);
+
+        // BRKGA::Chromosome x = {0.897114, 0.489479, 0.111952, 0.475832, 0.824423, 0.73154, 0.057623, 0.481461, 0.72154, 0.581603, 0.672329, 0.661998, 0.91152, 0.518634, 0};
+
+        // decoder.decode(x, true);
+
+        unsigned chromossome_size = instance.num_edges;
+
+        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Threshold2> algorithm (
+            decoder, BRKGA::Sense::MINIMIZE, seed,
+            chromossome_size, brkga_params, num_threads
+        );
+
+        algorithm.reset(); // chama #initialize(true)
+
+        ////////////////////////////////////////
+        // Find good solutions / evolve
+        ////////////////////////////////////////
+
+        cout << "Running for " << control_params.maximum_running_time << "s..." << endl;
+
+        const auto final_status = algorithm.run(control_params, &cout);
+
+        cout
+        << "\nAlgorithm status: " << final_status
+        << "\n\nBest cost: " << final_status.best_fitness * instance.cumulative_edge_cost
+        << endl;
+
+        ////////////////////////////////////////
+        // Save results in file
+        ////////////////////////////////////////
+
+        bool is_valid_solution = false;
+
+        if (final_status.best_fitness <= 1) {
+            is_valid_solution = true;
+        }
+
+        vector<format_edge> edges_cuted;
+        unsigned num_edges_cut = 0;
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            is_valid_solution,
+            final_status.best_fitness * instance.cumulative_edge_cost,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
+    }
+    catch(exception& e) {
+        cerr
+        << "\n" << string(40, '*') << "\n"
+        << "Exception Occurred: " << e.what()
+        << "\n" << string(40, '*')
+        << endl;
+    }
+}
+
+
+void execute_coloracao3(
+    const unsigned seed,
+    const string config_file,
+    const unsigned max_run_time,
+    const string instance_file,
+    const string output_file_name,
+    const unsigned num_threads
+) {
+    try {
+        cout << "Executing Decoder <coloracao3>" << endl;
+
+        ////////////////////////////////////////
+        // Read the instance
+        ////////////////////////////////////////
+
+        cout << "Reading data..." << endl;
+
+        auto instance = MCP_Instance(instance_file);
+
+        ////////////////////////////////////////
+        // Read algorithm parameters
+        ////////////////////////////////////////
+
+        cout << "Reading parameters..." << endl;
+
+        auto [brkga_params, control_params] = BRKGA::readConfiguration(config_file);
+
+        // Overwrite the maximum time from the config file.
+        control_params.maximum_running_time = chrono::seconds {max_run_time};
+
+        ////////////////////////////////////////
+        // Build the BRKGA data structures
+        ////////////////////////////////////////
+
+        cout << "Building BRKGA data and initializing..." << endl;
+        
+        MCP_Decoder_Coloracao3 decoder(instance);
+
+        unsigned chromossome_size = instance.num_nodes + 1;
+
+        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Coloracao3> algorithm(
+            decoder, BRKGA::Sense::MINIMIZE, seed,
+            chromossome_size, brkga_params, num_threads
+        );
+
+        algorithm.reset(); // chama #initialize(true)
+
+        ////////////////////////////////////////
+        // Find good solutions / evolve
+        ////////////////////////////////////////
+
+        cout << "Running for " << control_params.maximum_running_time << "s..." << endl;
+
+        const auto final_status = algorithm.run(control_params, &cout);
+
+        cout
+        << "\nAlgorithm status: " << final_status
+        << "\n\nBest cost: " << final_status.best_fitness
+        << endl;
+
+        // std::vector<BRKGA::fitness_t> crm = {0.671674, 0.736685, 0.405302, 0.172798, 0.903286, 0.549317, 0.548541, 0.0870224, 0.0157432};
+        // decoder.decode(crm, true);
+
+    
+        vector<format_edge> edges_cuted;
+        unsigned num_edges_cut = 0;
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
     }
     catch(exception& e) {
         cerr
