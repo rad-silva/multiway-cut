@@ -31,17 +31,17 @@ from glob import glob
 #---------------------[Parâmetros para alteração]---------------------------------
 
 # ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2"]
-DECODERS = ["kruskalpert"]
+DECODERS = ["threshold2", "coloracao2", "coloracao3"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
-INSTANCES_PATH = DEFAULT_PATH / "instances" / "custom"
+INSTANCES_PATH = DEFAULT_PATH / "instances" / "steiner"
 TESTES_PATH = DEFAULT_PATH / "testes"
 EXT_FILE = ".gr"
 
 MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
 CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
 SEED = "20"
-MAX_RUN_TIME = "20"
+MAX_RUN_TIME = "600"
 
 #---------------------[Execução dos testes automatizados]---------------------------------
 
