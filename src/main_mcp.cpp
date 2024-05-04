@@ -4,6 +4,7 @@
 // #include "executors/execute_kruskal.hpp"
 // #include "executors/execute_kruskal_pert.hpp"
 // #include "executors/execute_cuts.hpp"
+#include "mcp/mcp_instance.hpp"
 
 #include <iostream>
 #include <string>
@@ -35,6 +36,8 @@ int main(int argc, char* argv[])
         const string decoder_name = argv[5];
         const string output_file_name = argv[6];
         const unsigned num_threads = 1;
+
+        MCP_Instance instance(instance_file);
 
         if (decoder_name == "threshold") {
             execute_threshold(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);

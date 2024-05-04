@@ -70,15 +70,15 @@ MCP_Decoder_Multiple_Thresholds::MCP_Decoder_Multiple_Thresholds(const MCP_Insta
 
 BRKGA::fitness_t MCP_Decoder_Multiple_Thresholds::decode(Chromosome& chromosome, bool /* not-used */)
 {  
-    /// Stores the group that each node belongs to
+    /// Armazena a cor de cada nó
     std::vector<int> group(instance.num_nodes + 1, -1);
     
-    /// Compute group for non-terminal nodes
+    /// Determina a cor dos nós não-terminal
     for (unsigned u = 1; u <= instance.num_nodes; u++) {
         group[u] = std::floor(chromosome[u] * instance.num_terminals);
     }
 
-    /// Compute group for terminal nodes
+    /// Determina a cor de cada dos nós terminal
     for (unsigned i = 0; i < instance.num_terminals; i++) {
         unsigned s = instance.terminals[i];
         group[s] = i;
@@ -91,21 +91,25 @@ BRKGA::fitness_t MCP_Decoder_Multiple_Thresholds::decode(Chromosome& chromosome,
 
 unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& group)
 {
-    /// Set of cuts
-    std::vector<std::vector<edge>> set_cuts;
+    /// Armazena o custo acumulado dos cortes
+    double cuts_cost = 0;
 
-    /// Number of cuts an edge is part of
+    /// Armazena conjuntos de arestas que atravessam os cortes de cada componente conexa
+    std::vector<std::vector<edge>> set_of_set_edges_out_cut;
+
+    /// Armazena o número de vezes que um arco apareceu na fronteira de um corte
     std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
 
-    /// Queue of nodes found
+     /// Fila que armazena os nós encontrados
     std::queue<unsigned> queue;
 
-    /// Marker of nodes found
+    /// Armazena uma marcação para os nós que podem ser visitados
     std::vector<bool> visited(instance.num_nodes + 1, false);
     
     /////////////////////////////////////////////////
-    // Breadth-first search to find the nodes
-    // of the same group reachable from the terminal
+    // Breadth-first search para encontrar os nós de
+    // mesma cor que são alcançáveis a partir de cada
+    // terminal
     /////////////////////////////////////////////////
 
     unsigned edge_index = 0;
@@ -115,8 +119,7 @@ unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& 
         visited[s] = true;
         queue.push(s);
 
-        /// Store the nodes rechable from s using
-        /// nodes that are part of the same group
+        /// Armazena os arcos na fronteira da componente de s
         std::vector<edge> set_edges_out_group;
 
         while (!queue.empty()) {
@@ -124,7 +127,7 @@ unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& 
             unsigned u = queue.front();
             queue.pop();
             
-            /// Get the list of edges leaving u
+            /// Obtem a lista de arestas que saem de u
             const std::vector<MCP_Instance::edge>& u_list = instance.G[u];
 
             for (unsigned i = 0; i < u_list.size(); i++){
@@ -137,20 +140,25 @@ unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& 
                     }
                 }
                 else {
-                    /// Adds the arc to the set
-                    set_edges_out_group.push_back({u, v, u_list[i].cost, i});
-
                     /// Compute the edge index
                     edge_index = position_edge_vector[init_adjacency_list[u] + i];
                     
                     /// Increases the number of cuts this edge participates in
                     num_cuts_edge[edge_index]++;
+
+                    /// Considera o custo deste arco apenas uma vez
+                    if (num_cuts_edge[edge_index] == 1) {
+                        cuts_cost += u_list[i].cost;
+                    }
+
+                    /// Adiciona o arco no conjunto
+                    set_edges_out_group.push_back({u, v, u_list[i].cost, i});
                 }
             }
         }
 
         /// Adds edge set in cuts set
-        set_cuts.push_back(set_edges_out_group);
+        set_of_set_edges_out_cut.push_back(set_edges_out_group);
     }
     
     /////////////////////////////////////////////
@@ -158,33 +166,13 @@ unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& 
     // minus the cost of the highest value cut
     /////////////////////////////////////////////
 
-    /// Marking value for edges already considered in a cut
-    unsigned IGNORE = -1;
-
-    /// Total cost of cuts
-    unsigned total_cost_cuts = 0;
-
-    for (unsigned i = 0; i < set_cuts.size(); i++) {
-        
-        const std::vector<edge>& cut_i = set_cuts[i];
-
-        for (edge e: cut_i) {
-            edge_index = position_edge_vector[init_adjacency_list[e.src] + e.edge_index];
-
-            if (num_cuts_edge[edge_index] == 2) {
-                total_cost_cuts += e.cost;
-                num_cuts_edge[edge_index] = IGNORE; // non-contabilize reverse edge
-            }
-        }
-    }
-
     /// Highest cost cut (using bows exclusive to this cut)
     unsigned highest_cost_cut = 0;
 
-    for (unsigned i = 0; i < set_cuts.size(); i++) {
+    for (unsigned i = 0; i < set_of_set_edges_out_cut.size(); i++) {
         
         /// Get the i cut
-        const std::vector<edge>& cut_i = set_cuts[i];
+        const std::vector<edge>& cut_i = set_of_set_edges_out_cut[i];
 
         /// Store the cost of cut i 
         unsigned edges_single_cut_cost = 0;
@@ -202,11 +190,8 @@ unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& 
         if (edges_single_cut_cost > highest_cost_cut) {
             highest_cost_cut = edges_single_cut_cost;
         }
-
-        /// Update the total cust for all cuts
-        total_cost_cuts += edges_single_cut_cost;
     }
 
     /// Discards the most costly cut
-    return total_cost_cuts - highest_cost_cut;
+    return cuts_cost - highest_cost_cut;
 }

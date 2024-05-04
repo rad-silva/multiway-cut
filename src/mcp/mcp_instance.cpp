@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <iomanip>
 #include <cmath>
+#include <bits/stdc++.h>
+
 
 using namespace std;
 
@@ -27,7 +29,9 @@ MCP_Instance::MCP_Instance(const std::string &filename) :
     }
 
     string mark, discard;
-    unsigned u, v, cost;
+    unsigned u, v;
+    double cost;
+    string line;
 
     try
     {
@@ -35,13 +39,26 @@ MCP_Instance::MCP_Instance(const std::string &filename) :
         // Reading the graph structure
         ////////////////////////////////////////
 
-        string line;
+        // Ignoring the first line
+        getline(file, line);
 
-        /// Find <SECTION Graph> marker
-        while (getline(file, line) && line.find("SECTION Graph") == string::npos) { }
+        // Lendo rótulos dos terminais
+        getline(file, line);
 
-        file >> mark >> num_nodes;
-        file >> mark >> num_edges; // número de arcos real do grafo é (pode ser) diferente
+        stringstream lineStream(line);
+        int terminal;
+
+        while (lineStream >> terminal) {
+            terminals.push_back(terminal);
+        }
+
+        // O primeiro elemento do vetor terminals é o número de terminais
+        num_terminals = terminals[0];
+
+        terminals.erase(terminals.begin());
+
+        // Lendo numero de nós e arestas
+        file >> mark >> discard >> num_nodes >> num_edges;
 
         G.resize(num_nodes + 1);
 
@@ -50,81 +67,17 @@ MCP_Instance::MCP_Instance(const std::string &filename) :
             file >> mark >> u >> v >> cost;
 
             // add edge in u list
-            G[u].push_back({v, cost});
+            G[u].push_back({v, (unsigned int)cost});
 
             // add edge in v list
-            G[v].push_back({u, cost});
+            G[v].push_back({u, (unsigned int)cost});
 
             // increment acumulative cost
             cumulative_edge_cost += cost;
         }
 
-        ////////////////////////////////////////
-        // Reading of terminal nodes
-        ////////////////////////////////////////
-
-        // Find <SECTION Terminals> marker
-        while (getline(file, line) && line.find("SECTION Terminals") == string::npos) { }
-
-        file >> mark >> num_terminals;
-
-        terminals.resize(num_terminals);
-
-        for (unsigned i = 0; i < num_terminals; i++)
-        {
-            file >> mark >> terminals[i];
-        }
-   
-        // unsigned s, t;
-        
-        // // read line 1: <mark> <tipo_problema> <num_nodes> <num_edges>
-        // file >> mark >> discard >> num_nodes >> num_edges;
-
-        // G.resize(num_nodes + 1);
-
-        // // read line 2: <mark> <rotule_node> <type_src>
-        // // read line 3: <mark> <rotule_node> <type_sink>
-        // file >> mark >> s >> discard;
-        // file >> mark >> t >> discard;
-
-        // num_terminals = 2;
-        // terminals.push_back(s);
-        // terminals.push_back(t);
-
-        // int edge_index;
-
-        // // reads the lines of the arcs:
-        // // <mark> <src_node> <dst_node> <cost_edge>
-        // // ignore empty lines and lines with other markers
-        // while (file >> mark)
-        // {
-        //     if (mark == "a")
-        //     {
-        //         file >> u >> v >> cost;
-        //         edge_index = get_edge_index(u, v);
-
-        //         if (edge_index == -1)
-        //         {
-        //             // add edge in u list
-        //             G[u].push_back({v, cost});
-
-        //             // add edge in v list
-        //             G[v].push_back({u, cost});
-
-        //             // increment acumulative cost
-        //             cumulative_edge_cost += cost;
-        //         }
-        //         else
-        //         {
-        //             G[u][edge_index].cost = cost;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         getline(file, discard);
-        //     }
-        // }
-        // show();
+        show();
+    
     }
     catch (std::ifstream::failure &e)
     {
@@ -180,3 +133,101 @@ void MCP_Instance::show() const
     
     cout << endl;
 }
+
+
+
+///////////////// Reader Maximum Flow Instances
+
+// unsigned s, t;
+        
+// // read line 1: <mark> <tipo_problema> <num_nodes> <num_edges>
+// file >> mark >> discard >> num_nodes >> num_edges;
+
+// G.resize(num_nodes + 1);
+
+// // read line 2: <mark> <rotule_node> <type_src>
+// // read line 3: <mark> <rotule_node> <type_sink>
+// file >> mark >> s >> discard;
+// file >> mark >> t >> discard;
+
+// num_terminals = 2;
+// terminals.push_back(s);
+// terminals.push_back(t);
+
+// int edge_index;
+
+// // reads the lines of the arcs:
+// // <mark> <src_node> <dst_node> <cost_edge>
+// // ignore empty lines and lines with other markers
+// while (file >> mark)
+// {
+//     if (mark == "a")
+//     {
+//         file >> u >> v >> cost;
+//         edge_index = get_edge_index(u, v);
+
+//         if (edge_index == -1)
+//         {
+//             // add edge in u list
+//             G[u].push_back({v, cost});
+
+//             // add edge in v list
+//             G[v].push_back({u, cost});
+
+//             // increment acumulative cost
+//             cumulative_edge_cost += cost;
+//         }
+//         else
+//         {
+//             G[u][edge_index].cost = cost;
+//         }
+//     }
+//     else
+//     {
+//         getline(file, discard);
+//     }
+// }
+// show();
+
+
+///////////////// Reader Steiner Tree Instances
+
+// string line;
+
+// /// Find <SECTION Graph> marker
+// while (getline(file, line) && line.find("SECTION Graph") == string::npos) { }
+
+// file >> mark >> num_nodes;
+// file >> mark >> num_edges; // número de arcos real do grafo é (pode ser) diferente
+
+// G.resize(num_nodes + 1);
+
+// for (unsigned i = 0; i < num_edges; i++)
+// {
+//     file >> mark >> u >> v >> cost;
+
+//     // add edge in u list
+//     G[u].push_back({v, cost});
+
+//     // add edge in v list
+//     G[v].push_back({u, cost});
+
+//     // increment acumulative cost
+//     cumulative_edge_cost += cost;
+// }
+
+// ////////////////////////////////////////
+// // Reading of terminal nodes
+// ////////////////////////////////////////
+
+// // Find <SECTION Terminals> marker
+// while (getline(file, line) && line.find("SECTION Terminals") == string::npos) { }
+
+// file >> mark >> num_terminals;
+
+// terminals.resize(num_terminals);
+
+// for (unsigned i = 0; i < num_terminals; i++)
+// {
+//     file >> mark >> terminals[i];
+// }

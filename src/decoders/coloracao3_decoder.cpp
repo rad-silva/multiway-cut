@@ -22,6 +22,8 @@ using namespace BRKGA;
     foram visitados, contabilizamos o custo desses arcos separados por cor.
     No fim dessa segunda busca, temos, para cada cor, o custo da fronteira com essa componente desconexa. Atribuimos então
     à esses nós desconexos a cor com maior custo de fronteira e alteramos o cromossomo para refletir essa mudança de cor.
+
+    # TODO: explicar o que mudou nessa versão da busca no artigo
 */
 
 //-----------------------------[ Constructor ]--------------------------------//
@@ -76,15 +78,16 @@ BRKGA::fitness_t MCP_Decoder_Coloracao3::decode(Chromosome& chromosome, bool /* 
     for (unsigned i = 0; i < instance.num_terminals; i++) {
         unsigned s = instance.terminals[i];
         color_node[s] = i;
+        // TODO: atualizar cromossomo com a cor dos terminais também
     }
 
     // realiza a marcação dos nós que originalmente podem ser visitados a partir de um terminal
     double naturally_cut_cost = bfs_visited_nodes(color_node, visited_node);
 
     // recolore nós isolados e calcula valor do corte
-    double dicount_cut_cost = bfs_recolor_nodes(color_node, visited_node, chromosome);
+    double discount_cut_cost = bfs_recolor_nodes(color_node, visited_node, chromosome);
 
-    return naturally_cut_cost - dicount_cut_cost;
+    return naturally_cut_cost - discount_cut_cost;
 }
 
 //-----------------------------[ Calcula nós que podem ser visitados ]--------------------------------//
@@ -212,15 +215,13 @@ double MCP_Decoder_Coloracao3::bfs_recolor_nodes(
                             // v já foi visitado nessa busca
                     }
                     else {
-                        if (visited_node[v] == false) {
-                            cost_edges_border_by_color[color_node[v]] += cost;
-                        }
+                        cost_edges_border_by_color[color_node[v]] += cost;
                     }
                 }
             }
 
             double best_border_cost = 0;
-            double best_border_color = 0;
+            double best_border_color = -1;
 
             for (unsigned color = 0; color < instance.num_terminals; color++) {
                 if (cost_edges_border_by_color[color] > best_border_cost) {
@@ -238,6 +239,8 @@ double MCP_Decoder_Coloracao3::bfs_recolor_nodes(
 
                     // Converte o alelo do nó u no cromossomo
                     chromosome[u] = ((double)color_node[u] / (double)instance.num_terminals) + ((double)1 / (2*instance.num_terminals));
+
+                    // TODO: marcar ele como naturally visited também
                 }
             }
         }
