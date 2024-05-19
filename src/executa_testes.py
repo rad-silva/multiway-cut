@@ -31,10 +31,10 @@ from glob import glob
 #---------------------[Parâmetros para alteração]---------------------------------
 
 # ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2", "coloracao3"]
-DECODERS = ["coloracao"]
+DECODERS = ["mcortes"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
-INSTANCES_PATH = DEFAULT_PATH / "instances" / "steiner"
+INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "all"
 TESTES_PATH = DEFAULT_PATH / "testes"
 EXT_FILE = ".gr"
 

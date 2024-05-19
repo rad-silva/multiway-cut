@@ -1,0 +1,56 @@
+\documentclass[crop,tikz]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{filecontents*}{ppp.txt}
+x m0 m1 m2 m3
+0.7142857142857143 0.0 0.0 33.33333333333333 0.0
+0.8571428571428571 0.0 0.0 33.33333333333333 33.33333333333333
+0.9285714285714286 0.0 33.33333333333333 33.33333333333333 33.33333333333333
+0.9433962264150944 16.666666666666664 33.33333333333333 33.33333333333333 33.33333333333333
+0.9523809523809523 16.666666666666664 66.66666666666666 33.33333333333333 33.33333333333333
+0.9528301886792453 33.33333333333333 66.66666666666666 33.33333333333333 33.33333333333333
+0.9622641509433962 33.33333333333333 100.0 33.33333333333333 33.33333333333333
+0.9682539682539683 66.66666666666666 100.0 33.33333333333333 33.33333333333333
+0.9811320754716981 66.66666666666666 100.0 66.66666666666666 33.33333333333333
+0.9841269841269841 66.66666666666666 100.0 66.66666666666666 66.66666666666666
+1.0 100.0 100.0 100.0 100.0
+\end{filecontents*}
+\begin{tikzpicture}
+  \tiny
+	\begin{axis}[
+		height=7cm,
+		width=12cm,
+		xmin=0.7142857142857143,
+		xmax=1.0,
+		ytick={0,10,...,100},
+		%xtick={1.00,1.01,...,1.0},
+		grid=major,
+		no markers,
+		xlabel=Performance gap,
+            ylabel=\% of instances,
+		legend pos=south east,
+		x tick label style={/pgf/number format/.cd, 
+		                                fixed, 
+                                    fixed zerofill,
+                                    precision=2},  
+        cycle list={green!90!black,style=thick\\
+                    magenta,style=thick\\
+                    cyan,style=thick\\
+                    blue,style=thick\\
+                    red,style=thick\\
+                    yellow!90!black,style=thick\\
+                    black,style=thick\\}
+	]
+	\pgfplotstableread[col sep=space]{ppp.txt}\mydata;
+    \addplot table[y = m0] from \mydata ;
+    \addlegendentry{MÃ©todo 1}
+    \addplot table[y = m1] from \mydata ;
+    \addlegendentry{MÃ©todo 2}
+    \addplot table[y = m2] from \mydata ;
+    \addlegendentry{MÃ©todo 3}
+    \addplot table[y = m3] from \mydata ;
+    \addlegendentry{MÃ©todo 4}
+	 	\end{axis}
+\end{tikzpicture}
+\end{document}

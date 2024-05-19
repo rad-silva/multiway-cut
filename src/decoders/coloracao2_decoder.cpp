@@ -18,14 +18,14 @@ using namespace BRKGA;
 
 MCP_Decoder_Coloracao2::MCP_Decoder_Coloracao2(const MCP_Instance& _instance):
     instance(_instance),
-    init_adjacency_list(instance.num_nodes + 1, -1),
+    init_adjacency_list(instance.num_nodes, -1),
     position_edge_vector(instance.num_edges * 2, -1)
 {
     unsigned list_position = 0;
     unsigned edge_position = 0;
     unsigned u, v;
     
-    for (u = 1; u <= instance.num_nodes; u++) {
+    for (u = 0; u < instance.num_nodes; u++) {
         init_adjacency_list[u] = list_position;
 
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
@@ -52,13 +52,13 @@ MCP_Decoder_Coloracao2::MCP_Decoder_Coloracao2(const MCP_Instance& _instance):
 BRKGA::fitness_t MCP_Decoder_Coloracao2::decode(Chromosome& chromosome, bool /* not-used */)
 {  
     /// Armazena a cor de cada nó
-    std::vector<int> color(instance.num_nodes + 1, -1);
+    std::vector<int> color(instance.num_nodes, -1);
 
     /// Marcador de nós que originalmente podem ser visitados a partir de um terminal
-    std::vector<bool> originally_visited_node(instance.num_nodes + 1, false);
+    std::vector<bool> originally_visited_node(instance.num_nodes, false);
     
     /// Determina a cor dos nós não-terminal
-    for (unsigned u = 1; u <= instance.num_nodes; u++) {
+    for (unsigned u = 0; u < instance.num_nodes; u++) {
         color[u] = std::floor(chromosome[u] * instance.num_terminals);
     }
 
@@ -85,7 +85,7 @@ void MCP_Decoder_Coloracao2::bfs_get_original_visited_nodes(
     std::queue<unsigned> queue;
 
     /// Marcador de nós visitados
-    std::vector<bool> visited(instance.num_nodes + 1, false);
+    std::vector<bool> visited(instance.num_nodes, false);
     
     /////////////////////////////////////////////////
     // Breadth-first search para encontrar os nós de
@@ -138,7 +138,7 @@ unsigned MCP_Decoder_Coloracao2::bfs_recolor_nodes(
     std::queue<unsigned> queue;
 
     /// Marcador de nós visitados
-    std::vector<bool> visited(instance.num_nodes + 1, false);
+    std::vector<bool> visited(instance.num_nodes, false);
 
     // Armazena o índice de uma aresta na lista de adjascência
     unsigned edge_index = 0;
@@ -239,7 +239,7 @@ std::vector<edge> set_edges_out_component;
         unsigned total = 0;
     };
 
-    std::vector<terminals_found> found(instance.num_nodes + 1);
+    std::vector<terminals_found> found(instance.num_nodes);
 
 for (unsigned s: instance.terminals) {
             

@@ -13,14 +13,14 @@ using namespace BRKGA;
 
 MCP_Decoder_Single_Threshold::MCP_Decoder_Single_Threshold(const MCP_Instance& _instance):
     instance(_instance),
-    init_adjacency_list(instance.num_nodes + 1, -1),
+    init_adjacency_list(instance.num_nodes, -1),
     position_edge_vector(instance.num_edges * 2, -1)
 {
     unsigned list_position = 0;
     unsigned edge_position = 0;
     unsigned u, v;
     
-    for (u = 1; u <= instance.num_nodes; u++) {
+    for (u = 0; u < instance.num_nodes; u++) {
         init_adjacency_list[u] = list_position;
 
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
@@ -45,7 +45,7 @@ MCP_Decoder_Single_Threshold::MCP_Decoder_Single_Threshold(const MCP_Instance& _
 //-------------------------------[ Decode ]-----------------------------------//
 
 BRKGA::fitness_t MCP_Decoder_Single_Threshold::decode(Chromosome& chromosome, bool /* not-used */)
-{  
+{ 
     /// Cost of the solution that the chromosome encodes
     double cost = 0;
 
@@ -62,7 +62,7 @@ BRKGA::fitness_t MCP_Decoder_Single_Threshold::decode(Chromosome& chromosome, bo
     unsigned edge_index, v;
     
     /// Traverses the graph and marks the removed edges
-    for (unsigned u = 1; u <= instance.num_nodes; u++) {
+    for (unsigned u = 0; u < instance.num_nodes; u++) {
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
 
         for (unsigned i = 0; i < u_list.size(); i++) {
@@ -93,7 +93,7 @@ unsigned MCP_Decoder_Single_Threshold::bfs_separate_treminals(std::vector<bool>&
     unsigned separated_terminals = instance.num_terminals;
 
     /// Marker of nodes found
-    std::vector<bool> visited(instance.num_nodes + 1, false);
+    std::vector<bool> visited(instance.num_nodes, false);
 
     /// Queue of nodes found
     std::queue<unsigned> queue;

@@ -1,18 +1,16 @@
 Comando de compilação
 $ g++-12 -std=c++20 -I brkga_mp_ipr_cpp/brkga_mp_ipr test.cpp -o test > list.txt
 
-
+Remover necessidade de utilização de "./"
 export PATH=$PATH:/home/ricardo/Downloads/multiway/src
 
-./main_mcp 20 ./config.conf 50 ../instances/inst04.dat single_t ../testes/solution_inst04.dat
+comando de execução:
+./main_mcp 20 ./config.conf 10 ../instances/custom/inst01.gr coloracao2 ../testes/coloracao2/inst01.sol
 
- valgrind --leak-check=full ./main_mcp 20 ./config.conf 20 ../instances/inst04.dat cuts ../testes/cuts_inst04.dat > out
-20 ./config.conf 20 ../instances/inst03.dat cuts ../testes/cuts_inst03.dat
+Comando de compilação
+./main_mcp 20 ./config.conf 50 ../instances/inst04.dat single_t 2 ../testes/solution_inst04.dat
 
-# apresentar as informações em relação ao grafo originial
-  custo e viabilidade
+Comando para inspeção
+valgrind --leak-check=full ./main_mcp 20 ./config.conf 20 ../instances/inst04.dat cuts ../testes/cuts_inst04.dat > out
 
-
-  Geração que encontrou a solução
-  Tempo
-  Geração final
+for i in $(ls); do cat $i | grep Edges; done

@@ -18,14 +18,14 @@ using namespace BRKGA;
 
 MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) : 
     instance(_instance),
-    init_adjacency_list(instance.num_nodes + 1, -1),
+    init_adjacency_list(instance.num_nodes, -1),
     position_edge_vector(instance.num_edges * 2, -1)
 {
     unsigned list_position = 0;
     unsigned edge_position = 0;
     unsigned u, v;
     
-    for (u = 1; u <= instance.num_nodes; u++) {
+    for (u = 0; u < instance.num_nodes; u++) {
         init_adjacency_list[u] = list_position;
 
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
@@ -72,9 +72,9 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     MCP_Instance::edge edge_e;
 
     // the n+1 vertex will be used as an auxiliary node to perform the cuts
-    Graph G(instance.num_nodes + 1);
+    Graph G(instance.num_nodes);
 
-    for (u = 1; u <= instance.num_nodes; u++)
+    for (u = 0; u < instance.num_nodes; u++)
     {
         for (unsigned i = 0; i < instance.G[u].size(); i++)
         {
@@ -94,7 +94,7 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     // each si terminal from the others
     //////////////////////////////////////////////////
 
-    unsigned t = instance.num_nodes + 1;
+    unsigned t = instance.num_nodes;
 
     vector<vector<highest_push_relabel_max_flow::edge>> cuts;
 

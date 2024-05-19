@@ -1,5 +1,5 @@
 # Multiway Cut Problem (MCP)
-Uma coleção de algoritmos que utilizam a meta-heurístics BRKGA para encontrar uma boa solução para o Multiway Cut Problem (ou Multiterminals Cut Problem)
+Uma coleção de algoritmos que utilizam a meta-heurística BRKGA para encontrar uma boa solução para o Multiway Cut Problem (ou Multiterminals Cut Problem)
 
 
 ## Formulação do problema

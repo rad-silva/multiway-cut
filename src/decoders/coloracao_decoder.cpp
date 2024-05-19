@@ -37,14 +37,14 @@ using namespace BRKGA;
 
 MCP_Decoder_Multiple_Thresholds::MCP_Decoder_Multiple_Thresholds(const MCP_Instance& _instance):
     instance(_instance),
-    init_adjacency_list(instance.num_nodes + 1, -1),
+    init_adjacency_list(instance.num_nodes, -1),
     position_edge_vector(instance.num_edges * 2, -1)
 {
     unsigned list_position = 0;
     unsigned edge_position = 0;
     unsigned u, v;
     
-    for (u = 1; u <= instance.num_nodes; u++) {
+    for (u = 0; u < instance.num_nodes; u++) {
         init_adjacency_list[u] = list_position;
 
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
@@ -71,10 +71,10 @@ MCP_Decoder_Multiple_Thresholds::MCP_Decoder_Multiple_Thresholds(const MCP_Insta
 BRKGA::fitness_t MCP_Decoder_Multiple_Thresholds::decode(Chromosome& chromosome, bool /* not-used */)
 {  
     /// Armazena a cor de cada nó
-    std::vector<int> group(instance.num_nodes + 1, -1);
+    std::vector<int> group(instance.num_nodes, -1);
     
     /// Determina a cor dos nós não-terminal
-    for (unsigned u = 1; u <= instance.num_nodes; u++) {
+    for (unsigned u = 0; u < instance.num_nodes; u++) {
         group[u] = std::floor(chromosome[u] * instance.num_terminals);
     }
 
@@ -104,7 +104,7 @@ unsigned MCP_Decoder_Multiple_Thresholds::bfs_group_treminals(std::vector<int>& 
     std::queue<unsigned> queue;
 
     /// Armazena uma marcação para os nós que podem ser visitados
-    std::vector<bool> visited(instance.num_nodes + 1, false);
+    std::vector<bool> visited(instance.num_nodes, false);
     
     /////////////////////////////////////////////////
     // Breadth-first search para encontrar os nós de

@@ -11,15 +11,16 @@ using namespace BRKGA;
 
 //-----------------------------[ Constructor ]--------------------------------//
 
-MCP_Decoder_Threshold2::MCP_Decoder_Threshold2(const MCP_Instance &_instance) : instance(_instance),
-                                                                                init_adjacency_list(instance.num_nodes + 1, -1),
-                                                                                position_edge_vector(instance.num_edges * 2, -1)
+MCP_Decoder_Threshold2::MCP_Decoder_Threshold2(const MCP_Instance &_instance) : 
+    instance(_instance),
+    init_adjacency_list(instance.num_nodes, -1),
+    position_edge_vector(instance.num_edges * 2, -1)
 {
     unsigned list_position = 0;
     unsigned edge_position = 0;
     unsigned u, v;
 
-    for (u = 1; u <= instance.num_nodes; u++)
+    for (u = 0; u < instance.num_nodes; u++)
     {
         init_adjacency_list[u] = list_position;
 
@@ -59,7 +60,7 @@ BRKGA::fitness_t MCP_Decoder_Threshold2::decode(Chromosome &chromosome, bool /* 
     unsigned edge_index, v;
 
     /// Percorre o grafo e marca as arestas removidas
-    for (unsigned u = 1; u <= instance.num_nodes; u++)
+    for (unsigned u = 0; u < instance.num_nodes; u++)
     {
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
 
@@ -93,7 +94,7 @@ double MCP_Decoder_Threshold2::bfs_separate_treminals(std::vector<bool> &removed
     std::vector<unsigned> num_cuts_edge(instance.num_edges, 0);
 
     /// Marcador de nós visitados
-    std::vector<bool> visited(instance.num_nodes + 1, false);
+    std::vector<bool> visited(instance.num_nodes, false);
 
     /// fila de nós encontrados
     std::queue<unsigned> queue;

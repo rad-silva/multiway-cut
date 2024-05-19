@@ -28,11 +28,12 @@ MCP_Instance::MCP_Instance(const std::string &filename) :
         throw runtime_error("Cannot open instance file");
     }
 
+    string line;
     string mark, discard;
     unsigned u, v;
     double cost;
-    string line;
-
+    unsigned terminal;
+    
     try
     {
         ////////////////////////////////////////
@@ -45,17 +46,14 @@ MCP_Instance::MCP_Instance(const std::string &filename) :
         // Lendo rótulos dos terminais
         getline(file, line);
 
+        // Trata a string como um arquivo
         stringstream lineStream(line);
-        int terminal;
+        
+        lineStream >> num_terminals;
 
         while (lineStream >> terminal) {
             terminals.push_back(terminal);
         }
-
-        // O primeiro elemento do vetor terminals é o número de terminais
-        num_terminals = terminals[0];
-
-        terminals.erase(terminals.begin());
 
         // Lendo numero de nós e arestas
         file >> mark >> discard >> num_nodes >> num_edges;
@@ -76,7 +74,7 @@ MCP_Instance::MCP_Instance(const std::string &filename) :
             cumulative_edge_cost += cost;
         }
 
-        show();
+        // show();
     
     }
     catch (std::ifstream::failure &e)

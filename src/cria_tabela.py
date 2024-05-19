@@ -6,7 +6,8 @@
 import os
 from os.path import isfile, join
 
-TESTE_PATH = "../testes"
+
+TESTE_PATH = "/home/ricardo/Downloads/multiway//testes"
 EXTENSION_FILE = ".sol"
 
 def create_table():

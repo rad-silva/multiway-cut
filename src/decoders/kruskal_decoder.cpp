@@ -20,7 +20,7 @@ MCP_Decoder_Kruskal::MCP_Decoder_Kruskal(const MCP_Instance &_instance) :
     unsigned edge_position = 0;
 
     /// Inserts each edge into a list
-    for (u = 1; u <= instance.num_nodes; u++)
+    for (u = 0; u < instance.num_nodes; u++)
     {
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
 
@@ -49,12 +49,12 @@ BRKGA::fitness_t MCP_Decoder_Kruskal::decode(Chromosome &chromosome, bool /* not
     vector<edge> edges = list_edges;
 
     /// Structures for union-find
-    std::vector<unsigned> component(instance.num_nodes + 1, 0);
-    std::vector<int> terminal(instance.num_nodes + 1, -1);
-    std::vector<unsigned> rank(instance.num_nodes + 1, 0);
+    std::vector<unsigned> component(instance.num_nodes, 0);
+    std::vector<int> terminal(instance.num_nodes, -1);
+    std::vector<unsigned> rank(instance.num_nodes, 0);
 
     /// Mark who the component is and the terminal that each node is part of
-    for (unsigned v = 1; v <= instance.num_nodes; v++) {
+    for (unsigned v = 0; v < instance.num_nodes; v++) {
         component[v] = v;
         terminal[v] = -1;
         rank[v] = 0;

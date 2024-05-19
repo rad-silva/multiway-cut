@@ -1,0 +1,7 @@
+Instance,Nodes,Edges,Terminals,Valid Solution,Best cost,Num edges cut,Last update iteration,Last update time,Final iteration,Final time
+inst01,8,14,3,true,13,7,1,0.00361216,5602,20.002
+inst02,9,12,3,true,5,5,1,0.00373883,5825,20.0034
+inst03,6,6,3,true,2,3,1,0.00330349,6664,20
+inst04,3,3,3,true,3,3,1,0.00377692,7013,20.0019
+inst05,4,5,3,true,4,4,1,0.00391668,6881,20.0004
+inst06,10,15,4,true,24,7,1,0.00612346,5522,20.002

@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
         const string output_file_name = argv[6];
         const unsigned num_threads = 1;
 
-        MCP_Instance instance(instance_file);
+        // MCP_Instance instance(instance_file);
 
         if (decoder_name == "threshold") {
             execute_threshold(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);

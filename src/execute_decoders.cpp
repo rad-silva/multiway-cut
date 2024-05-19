@@ -104,7 +104,7 @@ void execute_threshold(
             }
         }
 
-        for (unsigned u = 1; u <= instance.num_nodes; u++) {
+        for (unsigned u = 0; u < instance.num_nodes; u++) {
             std::vector<MCP_Instance::edge> u_list = instance.G[u];
 
             for (unsigned i = 0; i < u_list.size(); i++) {
@@ -119,10 +119,11 @@ void execute_threshold(
         }
 
         bool is_valid_solution = false;
-
+        double real_fit = final_status.best_fitness;
 
         if (final_status.best_fitness <= 1) {
             is_valid_solution = true;
+            real_fit = final_status.best_fitness * instance.cumulative_edge_cost;
         }
 
         write_in_file (
@@ -131,7 +132,7 @@ void execute_threshold(
             instance.num_edges, 
             instance.num_terminals,
             is_valid_solution,
-            final_status.best_fitness * instance.cumulative_edge_cost,
+            real_fit,
             final_status.last_update_iteration,
             final_status.last_update_time,
             final_status.current_iteration,
@@ -188,7 +189,7 @@ void execute_coloracao(
 
         MCP_Decoder_Multiple_Thresholds decoder(instance);
 
-        unsigned chromossome_size = instance.num_nodes + 1;
+        unsigned chromossome_size = instance.num_nodes;
 
         BRKGA::BRKGA_MP_IPR<MCP_Decoder_Multiple_Thresholds> algorithm(
             decoder, BRKGA::Sense::MINIMIZE, seed,
@@ -227,7 +228,7 @@ void execute_coloracao(
         std::queue<unsigned> queue;
 
         /// Marker of nodes found
-        std::vector<bool> visited(instance.num_nodes + 1, false);
+        std::vector<bool> visited(instance.num_nodes, false);
         
         /////////////////////////////////////////////////
         // Breadth-first search to find the nodes
@@ -235,10 +236,10 @@ void execute_coloracao(
         /////////////////////////////////////////////////
 
         /// Stores the group that each node belongs to
-        std::vector<int> group(instance.num_nodes + 1, -1);
+        std::vector<int> group(instance.num_nodes, -1);
         
         /// Compute group for non-terminal nodes
-        for (unsigned i = 1; i <= instance.num_nodes; i++) {
+        for (unsigned i = 0; i < instance.num_nodes; i++) {
             group[i] = std::floor(final_status.best_chromosome[i] * instance.num_terminals);
         }
 
@@ -442,12 +443,12 @@ void execute_kruskal(
         /// Copy vector of edges
         vector<MCP_Decoder_Kruskal::edge> edges = decoder.list_edges;
 
-        std::vector<unsigned> component(instance.num_nodes + 1, 0);
-        std::vector<int> terminal(instance.num_nodes + 1, -1);
-        std::vector<unsigned> rank(instance.num_nodes + 1, 0);
+        std::vector<unsigned> component(instance.num_nodes, 0);
+        std::vector<int> terminal(instance.num_nodes, -1);
+        std::vector<unsigned> rank(instance.num_nodes, 0);
 
         /// Mark who the component is and the terminal that each node is part of
-        for (unsigned v = 1; v <= instance.num_nodes; v++) {
+        for (unsigned v = 0; v < instance.num_nodes; v++) {
             component[v] = v;
             terminal[v] = -1;
             rank[v] = 0;
@@ -597,12 +598,12 @@ void execute_kruskal_pert(
         vector<MCP_Decoder_Kruskal_Pertubation::edge> edges = decoder.list_edges;
         vector<double> perturbed_costs(instance.num_edges);
 
-        std::vector<unsigned> component(instance.num_nodes + 1, 0);
-        std::vector<int> terminal(instance.num_nodes + 1, -1);
-        std::vector<unsigned> rank(instance.num_nodes + 1, 0);
+        std::vector<unsigned> component(instance.num_nodes, 0);
+        std::vector<int> terminal(instance.num_nodes, -1);
+        std::vector<unsigned> rank(instance.num_nodes, 0);
 
         /// Mark who the component is and the terminal that each node is part of
-        for (unsigned v = 1; v <= instance.num_nodes; v++) {
+        for (unsigned v = 0; v < instance.num_nodes; v++) {
             component[v] = v;
             terminal[v] = -1;
             rank[v] = 0;
@@ -728,7 +729,14 @@ void execute_multiplos_cortes(
             chromossome_size, brkga_params, num_threads
         );
 
-        algorithm.reset(); // chama #initialize(true)
+        // algorithm.reset(); // chama #initialize(true)
+
+        BRKGA::Chromosome initial_chromosome(chromossome_size, 0.5);
+        
+        // {
+        algorithm.setInitialPopulation(
+            vector<BRKGA::Chromosome>(1, initial_chromosome));
+        // }
 
         ////////////////////////////////////////
         // Find good solutions / evolve
@@ -746,152 +754,155 @@ void execute_multiplos_cortes(
         << "\n\nBest cost: " << final_status.best_fitness
         << endl;
 
-        BRKGA::Chromosome chromosome = final_status.best_chromosome;
+        // BRKGA::Chromosome chromosome = final_status.best_chromosome;
 
-        double accumulated_cost_cuts = 0;
+        // double accumulated_cost_cuts = 0;
 
-        //////////////////////////////////////////////////
-        // creates a residual graph instance with the
-        // costs of the arcs perturbed by the chromosome
-        //////////////////////////////////////////////////
+        // //////////////////////////////////////////////////
+        // // creates a residual graph instance with the
+        // // costs of the arcs perturbed by the chromosome
+        // //////////////////////////////////////////////////
 
-        unsigned u, v, cost; 
-        unsigned edge_index;
-        MCP_Instance::edge edge_e;
+        // unsigned u, v, cost; 
+        // unsigned edge_index;
+        // MCP_Instance::edge edge_e;
 
-        // the n+1 vertex will be used as an auxiliary node to perform the cuts
-        Graph G(instance.num_nodes + 1);
+        // // the n+1 vertex will be used as an auxiliary node to perform the cuts
+        // Graph G(instance.num_nodes);
 
-        for (u = 1; u <= instance.num_nodes; u++)
-        {
-            for (unsigned i = 0; i < instance.G[u].size(); i++)
-            {
-                edge_e = instance.G[u][i];
-                v = edge_e.dst;
-                cost = edge_e.cost;
+        // for (u = 0; u < instance.num_nodes; u++)
+        // {
+        //     for (unsigned i = 0; i < instance.G[u].size(); i++)
+        //     {
+        //         edge_e = instance.G[u][i];
+        //         v = edge_e.dst;
+        //         cost = edge_e.cost;
 
-                if (u < v)
-                {
-                    G.add_edge_with_reverse(u, v, (cost * chromosome[edge_index]), i);
-                    edge_index++;
-                }
-            }
-        }
+        //         if (u < v)
+        //         {
+        //             G.add_edge_with_reverse(u, v, (cost * chromosome[edge_index]), i);
+        //             edge_index++;
+        //         }
+        //     }
+        // }
 
-        //////////////////////////////////////////////////
-        // calculates the cuts that isolate
-        // each si terminal from the others
-        //////////////////////////////////////////////////
+        // //////////////////////////////////////////////////
+        // // calculates the cuts that isolate
+        // // each si terminal from the others
+        // //////////////////////////////////////////////////
 
-        unsigned t = instance.num_nodes + 1;
+        // unsigned t = instance.num_nodes;
 
-        vector<vector<highest_push_relabel_max_flow::edge>> cuts;
+        // vector<vector<highest_push_relabel_max_flow::edge>> cuts;
 
-        for (unsigned si : instance.terminals)
-        {
-            // Create hpr object
-            highest_push_relabel_max_flow solver(G);
+        // for (unsigned si : instance.terminals)
+        // {
+        //     // Create hpr object
+        //     highest_push_relabel_max_flow solver(G);
 
-            for (unsigned sj : instance.terminals)
-            {
-                if (sj != si)
-                    solver.add_edge(sj, t, std::numeric_limits<double>::max(), 0);
-            }
+        //     for (unsigned sj : instance.terminals)
+        //     {
+        //         if (sj != si)
+        //             solver.add_edge(sj, t, std::numeric_limits<double>::max(), 0);
+        //     }
 
-            // Run algorithm that calculates the maximum flow
-            solver.solve(si, t);
+        //     // Run algorithm that calculates the maximum flow
+        //     solver.solve(si, t);
 
-            // Store de edges cut
-            cuts.push_back(solver.get_edges_cut());
-        }
+        //     // Store de edges cut
+        //     cuts.push_back(solver.get_edges_cut());
+        // }
 
-        //////////////////////////////////////////////////
-        // Calculates the number of times 
-        // each arc appeared in a cut
-        //////////////////////////////////////////////////
+        // //////////////////////////////////////////////////
+        // // Calculates the number of times 
+        // // each arc appeared in a cut
+        // //////////////////////////////////////////////////
 
-        /// Number of cuts an edge is part of
-        std::vector<int> num_cuts_edge(instance.num_edges, 0);
+        // /// Number of cuts an edge is part of
+        // std::vector<int> num_cuts_edge(instance.num_edges, 0);
 
-        for (unsigned i = 0; i < cuts.size(); i++)
-        {
-            for (highest_push_relabel_max_flow::edge e : cuts[i])
-            {
-                /// Compute the edge index
-                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+        // for (unsigned i = 0; i < cuts.size(); i++)
+        // {
+        //     for (highest_push_relabel_max_flow::edge e : cuts[i])
+        //     {
+        //         /// Compute the edge index
+        //         edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
 
-                /// Increases the number of cuts this edge participates in
-                num_cuts_edge[edge_index]++;
-            }
-        }
+        //         /// Increases the number of cuts this edge participates in
+        //         num_cuts_edge[edge_index]++;
+        //     }
+        // }
 
-        //////////////////////////////////////////////////
-        // Calculates the cost of all cuts.
-        // It also calculates the highest real cost cut (only
-        // considering arcs that are part of a single cut)
-        //////////////////////////////////////////////////
+        // //////////////////////////////////////////////////
+        // // Calculates the cost of all cuts.
+        // // It also calculates the highest real cost cut (only
+        // // considering arcs that are part of a single cut)
+        // //////////////////////////////////////////////////
 
-        unsigned highest_cost = 0;
-        unsigned index_cut = 0;
+        // unsigned highest_cost = 0;
+        // unsigned index_cut = 0;
 
-        for (unsigned i = 0; i < cuts.size(); i++)
-        {
-            double cost_cut = 0;
+        // for (unsigned i = 0; i < cuts.size(); i++)
+        // {
+        //     double cost_cut = 0;
 
-            for (highest_push_relabel_max_flow::edge e : cuts[i])
-            {
-                /// Compute the edge index
-                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+        //     for (highest_push_relabel_max_flow::edge e : cuts[i])
+        //     {
+        //         /// Compute the edge index
+        //         edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
 
-                if (num_cuts_edge[edge_index] == 1)
-                    cost_cut += instance.G[e.src][e.index].cost;
-            }
+        //         if (num_cuts_edge[edge_index] == 1)
+        //             cost_cut += instance.G[e.src][e.index].cost;
+        //     }
 
-            if (cost_cut > highest_cost)
-            {
-                highest_cost = cost_cut;
-                index_cut = i;
-            }
+        //     if (cost_cut > highest_cost)
+        //     {
+        //         highest_cost = cost_cut;
+        //         index_cut = i;
+        //     }
 
-            for (highest_push_relabel_max_flow::edge e : cuts[i])
-            {
-                /// Compute the edge index
-                edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+        //     for (highest_push_relabel_max_flow::edge e : cuts[i])
+        //     {
+        //         /// Compute the edge index
+        //         edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
 
-                if (num_cuts_edge[edge_index] >= 2) {
-                    accumulated_cost_cuts += instance.G[e.src][e.index].cost;
-                    num_cuts_edge[edge_index] = -1;
-                }
-            }
+        //         if (num_cuts_edge[edge_index] >= 2) {
+        //             accumulated_cost_cuts += instance.G[e.src][e.index].cost;
+        //             num_cuts_edge[edge_index] = -1;
+        //         }
+        //     }
 
-            accumulated_cost_cuts += cost_cut;
-        }
+        //     accumulated_cost_cuts += cost_cut;
+        // }
 
-        typedef struct {int src; int dst; unsigned cost;} aux_edge;
+        // typedef struct {int src; int dst; unsigned cost;} aux_edge;
+        // vector<format_edge> edges_cuted;
+        // unsigned num_edges_cut = 0;
+
+        // // calcula numero de arcos no corte
+        // for (unsigned i = 0; i < cuts.size(); i++)
+        // {
+        //     if (i != index_cut) {
+        //         for (highest_push_relabel_max_flow::edge e : cuts[i])
+        //         {
+        //             /// Compute the edge index
+        //             edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
+
+        //             if (num_cuts_edge[edge_index] == 1) { // insere o arcos que fazem parte de um unico corte
+        //                 edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
+        //                 num_edges_cut++;
+        //             }
+        //             if (num_cuts_edge[edge_index] == -1) { // insere o arcos que fazem parte de 2 ou mais cortes apenas uma vez
+        //                 edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
+        //                 num_cuts_edge[edge_index] == -2; 
+        //                 num_edges_cut++;
+        //             }
+        //         }
+        //     }
+        // }
+
         vector<format_edge> edges_cuted;
         unsigned num_edges_cut = 0;
-
-        // calcula numero de arcos no corte
-        for (unsigned i = 0; i < cuts.size(); i++)
-        {
-            if (i != index_cut) {
-                for (highest_push_relabel_max_flow::edge e : cuts[i])
-                {
-                    /// Compute the edge index
-                    edge_index = decoder.position_edge_vector[decoder.init_adjacency_list[e.src] + e.index];
-
-                    if (num_cuts_edge[edge_index] == 1) { // insere o arcos que fazem parte de um unico corte
-                        edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
-                        num_edges_cut++;
-                    }
-                    if (num_cuts_edge[edge_index] == -1) { // insere o arcos que fazem parte de 2 ou mais cortes apenas uma vez
-                        edges_cuted.push_back(format_edge{static_cast<unsigned int>(e.src), static_cast<unsigned int>(e.dst), instance.G[e.src][e.index].cost});
-                        num_cuts_edge[edge_index] == -2; 
-                        num_edges_cut++;
-                    }
-                }
-            }
-        }
 
         write_in_file (
             output_file_name, 
@@ -958,7 +969,7 @@ void execute_coloracao2(
         
         MCP_Decoder_Coloracao2 decoder(instance);
 
-        unsigned chromossome_size = instance.num_nodes + 1;
+        unsigned chromossome_size = instance.num_nodes;
 
         BRKGA::BRKGA_MP_IPR<MCP_Decoder_Coloracao2> algorithm(
             decoder, BRKGA::Sense::MINIMIZE, seed,
@@ -997,7 +1008,7 @@ void execute_coloracao2(
         std::queue<unsigned> queue;
 
         /// Marker of nodes found
-        std::vector<bool> visited(instance.num_nodes + 1, false);
+        std::vector<bool> visited(instance.num_nodes, false);
         
         /////////////////////////////////////////////////
         // Breadth-first search to find the nodes
@@ -1005,10 +1016,10 @@ void execute_coloracao2(
         /////////////////////////////////////////////////
 
         /// Stores the group that each node belongs to
-        std::vector<int> group(instance.num_nodes + 1, -1);
+        std::vector<int> group(instance.num_nodes, -1);
         
         /// Compute group for non-terminal nodes
-        for (unsigned i = 1; i <= instance.num_nodes; i++) {
+        for (unsigned i = 0; i < instance.num_nodes; i++) {
             group[i] = std::floor(final_status.best_chromosome[i] * instance.num_terminals);
         }
 
@@ -1203,9 +1214,11 @@ void execute_threshold2(
         ////////////////////////////////////////
 
         bool is_valid_solution = false;
+        double real_fit = final_status.best_fitness;
 
         if (final_status.best_fitness <= 1) {
             is_valid_solution = true;
+            real_fit = final_status.best_fitness * instance.cumulative_edge_cost;
         }
 
         vector<format_edge> edges_cuted;
@@ -1217,7 +1230,7 @@ void execute_threshold2(
             instance.num_edges, 
             instance.num_terminals,
             is_valid_solution,
-            final_status.best_fitness * instance.cumulative_edge_cost,
+            real_fit,
             final_status.last_update_iteration,
             final_status.last_update_time,
             final_status.current_iteration,
@@ -1274,7 +1287,7 @@ void execute_coloracao3(
         
         MCP_Decoder_Coloracao3 decoder(instance);
 
-        unsigned chromossome_size = instance.num_nodes + 1;
+        unsigned chromossome_size = instance.num_nodes;
 
         BRKGA::BRKGA_MP_IPR<MCP_Decoder_Coloracao3> algorithm(
             decoder, BRKGA::Sense::MINIMIZE, seed,
