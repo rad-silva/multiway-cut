@@ -21,11 +21,53 @@ O projeto foi desenvolvido e testado com as seguintes versões de software, mas 
 - Python 3.10.12
 - [BRKGA-MP-IPR 3.0](https://ceandrade.github.io/brkga_mp_ipr_cpp/)
 
-  
-## Compilação
-Para compilar o projeto, você pode usar o utilitário `make`.
-Ele compilará todos os arquivos necessários.
-Certifique-se de que você está no diretório raiz do projeto antes de executar o seguinte comando:
+Opcionais:
+- openjdk 11.0.24 -----> para utilizar o gerador de instâncias em java
+- cplex studio 22.11 -----> para solução de instâncias com o cplex
+
+
+## Estrutura do projeto
+
+O projeto é estruturado da seguinte forma
+
+```
+.
+├── instances
+│   ├── concentric_gen
+│   ├── concentric_inst
+│   ├── concentric_sol
+│   ├── custom
+│   └── steiner
+├── scripts
+├── src
+│   ├── brkga_mp_ipr
+│   ├── decoders
+│   ├── geradores
+│   ├── max_flow
+│   └── mcp
+└── testes
+```
+
+- **`instances/concentric_gen/`**: Arquivos com parâmetros para geração de instâncias com decaimento exponencial (veja a seção 6.1 do artigo [A local search approximation algorithm for the multiway cut problem](https://www.sciencedirect.com/science/article/pii/S0166218X23002007) para compreensão das instâncias com decaimento exponencial utilizadas como benchmark. O gerador de instâncias foi desenvolvido pelos autores do artigo em linguagem java e pode ser obtido em (https://csd.uwo.ca/~ablochha/MultiwayCut.html) que também contém a implementação de algoritmos para o multiway cut e sua formulação com CPLEX).
+- **`instances/concentric_inst/`**: Conjunto de instâncias geradas separados em pastas por número de terminais (20T/, 40T/ e 60T/) e uma pasta com a união de todos (all/).
+- **`instances/concentric_sol/`**: Solução obtida pela isolation heuristic (via decoder baseado em multiplos cortes 3) para cada uma das instâncias de decaimento exponencial.
+- **`instances/steiner/`**: Conjunto de instâncias do problema Steiner Tree.
+
+Mais detalhes os arquivos de instâncias são encontrados em seus respectivos diretórios nos arquivos nomeados como `infos.txt`
+
+- **`src/brkga_mp_ipr/`**: Contém os importáveis do Multiparent BRKGA com Implict Path Relink.
+- **`src/decoders/`**: Códigos fontes do decoders.
+- **`src/geradores/`**: Códigos para geração de cromossomos para os principais decoders a partir da solução de uma instância.
+- **`src/max_flow/`**: Códigos de um grafo direcionado, algoritmo push-relabel e estrutura de dados utilizadas, para o Maximum FLow Problem, que envolve o cálculo do fluxo máximo e corte mínimo entre dois terminais (desenvolvido em um trabalho anterior).
+- **`src/mcp/`**: Códigos de um grafo não direcionado com múltiplos terminais para o Multiay Cut Problem.
+- **`testes/`**: Armazena os arquivos de saída dos testes realizados.
+
+## Como executar
+
+**`Compilação`**
+
+Para compilar o projeto, é utilizado o arquivo `src/Makefile` que contém todas as importações dos arquivos a serem compilados, flags de otimização, etc.
+Certifique-se de que você está no diretório `src/` e execute o seguinte comando:
 ```
 make
 ```
@@ -33,27 +75,46 @@ Se, em algum momento, você quiser apagar os arquivos compilados para recompilar
 ```
 make clean
 ```
+Caso deseje incluir um novo arquivo para compilação, acrescente na variável `OBJS` do arquivo `src/Makefile` o nome do SEUARQUIVO.o (supondo que você tenha codado os arquivos SEUARQUIVO.hpp e SEUARQUIVO.cpp). Você pode acessar o Makefile e visualizar como os arquivos foram importados e os demais recursos. Caso não tenha familiaridade com as diretivas make, você pode colar o conteúdo do arquivo em um chatbot, como o chatGPT e o Gemini, e eles te fornecerão uma explicação detalhada dos comandos e definições.
 
 
-## Execução manual
-Após a compilação bem-sucedida, você pode executar o programa da seguinte maneira:
+**`Execução manual de instâncias`**
+
+Após a compilação bem-sucedida, você pode executar o programa da seguinte usando a linha de comando da seguinte maneira (certifique-se de estar no diretório `src/`):
+
 ```
-bin/main instances/{nome da instância} {sigla do algoritmo}
+./main_mcp <seed> <config-file-relative-path> <maximum-running-time-seconds> <mcp-instance-file-relative-path> <decoder-name> <output-file-relative-path>"
 ```
-Substitua {nome da instância} pelo nome da instância desejada e {sigla do algoritmo} pela sigla do algoritmo que você deseja executar.
+
+Abaixo deixamos um exemplo para execução do decoder baseado em coloração de vértices com execução máxima de 10 segundos. Sinta-se à vontade para testar.
+
+```
+cd src
+
+./main_mcp 20 ./config.conf 10 ../instances/concentric_inst/20T/20T6E1.gr coloracao3 ../tetes/20T6E5.sol
+```
 
 
-## Execução automatizada
+**`Execução automatizada de instâncias`**
+
 Para executar testes com vários algoritmos, certifique-se de que você possui o Python 3 instalado em seu sistema.
-Em seguida, execute o seguinte comando:
-```
-python3 apps/executaTestes.py
-```
-Certifique-se de que tenha especificado as siglas dos algoritmos a serem executados no arquivo executaTestes.py antes de rodar o comando.
 
+O arquivo `src/executa_testes.py` contém um programa python em que você pode especificar todos os parâmetros de execução mostrados anteriormente. A diferença é que pode ser dado um conjunto de nomes de decoders e o caminho relativo de uma pasta de instâncias e ele rodará, para cada decoder, todas as instâncias da pasta. Após ter definido todos os parâmetros, salve o arquivo e execute o seguinte comando:
+
+```
+python3 apps/executa_testes.py
+```
+
+Para cada instância será gerada uma subpasta em `testes/` nomeada com o nome do decoder e a data de sua execução **(Atenção!!! executar um mesmo decoder na mesma data com o mesmo conjunto de instâncias sobrescreverá o resultado anterior)**. Para teste (instância) será gerado um arquivo de saída `.sol` contendo as informações da execução e resultados obtidos.
+
+Você também pode gerar arquivos .csv para cada conjunto de soluções contidas na pasta de testes. Para isso, o arquivo `src/cria_tabela.py` contém um programa python que acessa cada subpastas do diretório `testes/` e cria um arquivo `.csv` onde cada linha corresponde à solução registrada em um arquivo de solução contido na respectiva subpasta. Execute
+
+```
+python3 src/cria_tabela.py
+```
 
 ---
 
 
-Isso é tudo! Agora você está pronto para compilar e executar seu projeto em C++ no Linux.
+Isso é tudo! Agora você está pronto para compilar e executar este projeto em C++ no Linux.
 Se precisar de mais informações ou tiver alguma dúvida, sinta-se à vontade para entrar em contato conosco.

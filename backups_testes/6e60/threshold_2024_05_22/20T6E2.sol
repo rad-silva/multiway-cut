@@ -1,0 +1,39 @@
+Nodes: 320
+Edges: 2223
+Terminals: 20
+Valid Solution: false
+Best cost: 19.0009
+Num edges cut: 28
+Last update iteration: 6306
+Last update time: 59.6331
+Final iteration: 6346
+Final time: 60.0081
+Edges cuted:
+6 300 2
+6 58 1
+17 257 1
+21 318 1
+23 218 1
+25 162 1
+27 193 1
+40 96 1
+42 130 1
+46 225 1
+58 308 2
+69 142 6
+74 117 1
+94 270 1
+109 155 1
+131 270 1
+141 192 2
+141 209 1
+151 219 1
+162 261 1
+163 295 1
+168 310 1
+180 267 1
+199 304 1
+205 211 2
+210 241 1
+243 288 1
+259 300 1

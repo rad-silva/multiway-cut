@@ -90,6 +90,7 @@
         "shared_mutex": "cpp",
         "syncstream": "cpp",
         "expected": "cpp",
-        "spanstream": "cpp"
+        "spanstream": "cpp",
+        "queue": "cpp"
     }
 }

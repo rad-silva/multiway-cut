@@ -14,3 +14,13 @@ Comando para inspeção
 valgrind --leak-check=full ./main_mcp 20 ./config.conf 20 ../instances/inst04.dat cuts ../testes/cuts_inst04.dat > out
 
 for i in $(ls); do cat $i | grep Edges; done
+
+
+./main_mcp 20 ./config.conf 5 ../instances/concentric_inst/20T/20T1E1.gr threshold3  ../tetes/20T1E1.sol[[[[]]]]
+
+
+
+
+
+
+./main_mcp 20 ./config.conf 20 ../instances/concentric_inst/20T/20T6E1.gr mcortes2 ../tetes/20T6E5.sol
