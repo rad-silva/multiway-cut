@@ -5,14 +5,18 @@
 #include "write_file.hpp"
 #include "execute_decoders.hpp"
 
+#include "geradores/geradores_cromossomo.hpp"
+
 #include "decoders/threshold_decoder.hpp"
 #include "decoders/coloracao_decoder.hpp"
 #include "decoders/kruskal_decoder.hpp"
 #include "decoders/kruskal_pert_decoder.hpp"
 #include "decoders/multiplos_cortes_decoder.hpp"
+#include "decoders/multiplos_cortes2_decoder.hpp"
 #include "decoders/coloracao2_decoder.hpp"
 #include "decoders/threshold2_decoder.hpp"
 #include "decoders/coloracao3_decoder.hpp"
+#include "decoders/threshold3_decoder.hpp"
 
 #include "max_flow/highest_push_relabel.hpp"
 #include "max_flow/graph.hpp"
@@ -572,7 +576,23 @@ void execute_kruskal_pert(
             chromossome_size, brkga_params, num_threads
         );
 
-        algorithm.reset(); // chama #initialize(true)
+        // algorithm.reset(); // chama #initialize(true)
+
+        // BRKGA::Chromosome initial_chromosome(chromossome_size, 0.5);
+        
+        // // {
+        // algorithm.setInitialPopulation(
+        //     vector<BRKGA::Chromosome>(1, initial_chromosome));
+        // // }
+
+        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+
+        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+
+        // {
+        algorithm.setInitialPopulation(
+            vector<BRKGA::Chromosome>(1, gerador_cromossomo_krp(caminho_arquivo_solucao_isolation)));
+        // }
 
         ////////////////////////////////////////
         // Find good solutions / evolve
@@ -1294,7 +1314,16 @@ void execute_coloracao3(
             chromossome_size, brkga_params, num_threads
         );
 
-        algorithm.reset(); // chama #initialize(true)
+        // algorithm.reset(); // chama #initialize(true)
+
+        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+
+        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+
+        // {
+        algorithm.setInitialPopulation(
+            vector<BRKGA::Chromosome>(1, gerador_cromossomo_col3(caminho_arquivo_solucao_isolation)));
+        // }
 
         ////////////////////////////////////////
         // Find good solutions / evolve
@@ -1330,6 +1359,224 @@ void execute_coloracao3(
             num_edges_cut,
             edges_cuted
         );
+    }
+    catch(exception& e) {
+        cerr
+        << "\n" << string(40, '*') << "\n"
+        << "Exception Occurred: " << e.what()
+        << "\n" << string(40, '*')
+        << endl;
+    }
+}
+
+
+
+void execute_threshold3(
+    const unsigned seed,
+    const string config_file,
+    const unsigned max_run_time,
+    const string instance_file,
+    const string output_file_name,
+    const unsigned num_threads
+) {
+    try {
+        cout << "Executing Decoder <threshold3>" << endl;
+
+        ////////////////////////////////////////
+        // Read the instance
+        ////////////////////////////////////////
+
+        cout << "Reading data..." << endl;
+
+        auto instance = MCP_Instance(instance_file);
+
+        ////////////////////////////////////////
+        // Read algorithm parameters
+        ////////////////////////////////////////
+
+        cout << "Reading parameters..." << endl;
+
+        auto [brkga_params, control_params] = BRKGA::readConfiguration(config_file);
+
+        // Overwrite the maximum time from the config file.
+        control_params.maximum_running_time = chrono::seconds {max_run_time};
+
+        ////////////////////////////////////////
+        // Build the BRKGA data structures
+        ////////////////////////////////////////
+
+        cout << "Building BRKGA data and initializing..." << endl;
+
+        MCP_Decoder_Threshold3 decoder(instance);
+
+        // decoder.decode(x, true);
+
+        unsigned chromossome_size = instance.num_edges;
+
+        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Threshold3> algorithm (
+            decoder, BRKGA::Sense::MINIMIZE, seed,
+            chromossome_size, brkga_params, num_threads
+        );
+
+        // algorithm.reset(); // chama #initialize(true)
+
+        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+
+        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+
+        // {
+        algorithm.setInitialPopulation(
+            vector<BRKGA::Chromosome>(1, gerador_cromossomo_th3(caminho_arquivo_solucao_isolation)));
+        // }
+
+        ////////////////////////////////////////
+        // Find good solutions / evolve
+        ////////////////////////////////////////
+
+        cout << "Running for " << control_params.maximum_running_time << "s..." << endl;
+
+        const auto final_status = algorithm.run(control_params, &cout);
+
+        cout
+        << "\nAlgorithm status: " << final_status
+        << "\n\nBest cost: " << final_status.best_fitness
+        << endl;
+
+        ////////////////////////////////////////
+        // Save results in file
+        ////////////////////////////////////////
+
+        bool is_valid_solution = true;
+
+        vector<format_edge> edges_cuted;
+        unsigned num_edges_cut = 0;
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            is_valid_solution,
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
+    }
+    catch(exception& e) {
+        cerr
+        << "\n" << string(40, '*') << "\n"
+        << "Exception Occurred: " << e.what()
+        << "\n" << string(40, '*')
+        << endl;
+    }
+}
+
+
+
+void execute_multiplos_cortes2(
+    const unsigned seed,
+    const string config_file,
+    const unsigned max_run_time,
+    const string instance_file,
+    const string output_file_name,
+    const unsigned num_threads
+) {
+    try {
+        cout << "Executing Decoder <mcortes2>" << endl;
+
+        ////////////////////////////////////////
+        // Read the instance
+        ////////////////////////////////////////
+
+        cout << "Reading data..." << endl;
+
+        auto instance = MCP_Instance(instance_file);
+
+
+        ////////////////////////////////////////
+        // Read algorithm parameters
+        ////////////////////////////////////////
+
+        cout << "Reading parameters..." << endl;
+
+        auto [brkga_params, control_params] =
+            BRKGA::readConfiguration(config_file);
+
+        // Overwrite the maximum time from the config file.
+        control_params.maximum_running_time = chrono::seconds {max_run_time};
+
+
+        ////////////////////////////////////////
+        // Build the BRKGA data structures
+        ////////////////////////////////////////
+
+        cout << "Building BRKGA data and initializing..." << endl;
+
+        MCP_Decoder_Cuts2 decoder(instance);
+
+        unsigned chromossome_size = instance.num_edges;
+
+        BRKGA::BRKGA_MP_IPR<MCP_Decoder_Cuts2> algorithm(
+            decoder, BRKGA::Sense::MINIMIZE, seed,
+            chromossome_size, brkga_params, num_threads
+        );
+
+        // algorithm.reset(); // chama #initialize(true)
+
+        // BRKGA::Chromosome initial_chromosome(chromossome_size, 0.5);
+        
+        // // {
+        // algorithm.setInitialPopulation(
+        //     vector<BRKGA::Chromosome>(1, initial_chromosome));
+        // // }
+
+        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+
+        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+
+        // {
+        algorithm.setInitialPopulation(
+            vector<BRKGA::Chromosome>(1, gerador_cromossomo_krp(caminho_arquivo_solucao_isolation)));
+        // }
+
+        ////////////////////////////////////////
+        // Find good solutions / evolve
+        ////////////////////////////////////////
+
+        cout << "Running for " << control_params.maximum_running_time << "..." << endl;
+
+        const auto final_status = algorithm.run(control_params, &cout);
+
+        // BRKGA::Chromosome chromosome = {0.59878, 0.59878, 0.59878, 0.59878, 0.59878, 0.59878};
+        // decoder.decode(chromosome, true);
+
+        cout
+        << "\nAlgorithm status: " << final_status
+        << "\n\nBest cost: " << final_status.best_fitness
+        << endl;
+
+        vector<format_edge> edges_cuted;
+        unsigned num_edges_cut = 0;
+
+        write_in_file (
+            output_file_name, 
+            instance.num_nodes, 
+            instance.num_edges, 
+            instance.num_terminals,
+            true, // this decoder always obtains a valid solution
+            final_status.best_fitness,
+            final_status.last_update_iteration,
+            final_status.last_update_time,
+            final_status.current_iteration,
+            final_status.current_time,
+            num_edges_cut,
+            edges_cuted
+        );
+
     }
     catch(exception& e) {
         cerr

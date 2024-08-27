@@ -45,6 +45,8 @@ BRKGA::fitness_t MCP_Decoder_Kruskal_Pertubation::decode(Chromosome &chromosome,
     /// edges cuted
     double cost_cut = 0;
 
+    int N = 10;
+
     /// Copy vector of edges
     vector<edge> edges = list_edges;
 
@@ -69,7 +71,8 @@ BRKGA::fitness_t MCP_Decoder_Kruskal_Pertubation::decode(Chromosome &chromosome,
 
     /// Upsets the cost of edges
     for (unsigned i = 0; i < instance.num_edges; i++) {
-        perturbed_costs[i] = (edges[i].cost * chromosome[i]) * -1;
+        // perturbed_costs[i] = (edges[i].cost * chromosome[i]) * -1;
+        perturbed_costs[i] = ( (double)(pow(2, N / 2) * edges[i].cost) / (double)(pow(2, (N * (1 - chromosome[i])))) ) * -1;
     }
 
     /// Order the chromosomesome based on the value of the alleles.
@@ -164,7 +167,7 @@ int MCP_Decoder_Kruskal_Pertubation::separa(std::vector<double>& v, std::vector<
     double c = v[r]; // c é o pivô
     i = p;
     for (j = p; j < r; j++)
-        if (v[j] <= c)
+        if (v[j] <= c) // crescente
         {
             troca_d(v, i, j);
             troca_e(edges, i, j);

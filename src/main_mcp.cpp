@@ -6,13 +6,15 @@
 // #include "executors/execute_cuts.hpp"
 #include "mcp/mcp_instance.hpp"
 
+#include "geradores/geradores_cromossomo.hpp"
+
 #include <iostream>
 #include <string>
 #include <stdexcept>
 
 using namespace std;
 
-//-------------------------------[ Main ]------------------------------------//
+// //-------------------------------[ Main ]------------------------------------//
 
 int main(int argc, char* argv[])
 {
@@ -63,10 +65,16 @@ int main(int argc, char* argv[])
         else if (decoder_name == "coloracao3") {
             execute_coloracao3(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
         }
+        else if (decoder_name == "threshold3") {
+            execute_threshold3(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        }
+        else if (decoder_name == "mcortes2") {
+            execute_multiplos_cortes2(seed, config_file, max_run_time, instance_file, output_file_name, num_threads);
+        }
         else {
             cerr
             << "Specified decoder not listed: "
-            << "<threshold> <coloracao> <kruskal> <kruskalpert> <mcortes> <coloracao2> <threshold2> <coloracao3>"
+            << "<threshold> <coloracao> <kruskal> <kruskalpert> <mcortes> <coloracao2> <threshold2> <coloracao3> <threshold3> "
             << endl;
         }
     }
@@ -81,3 +89,27 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+
+
+
+// int main() {
+//     try {
+//         // Substitua pelo caminho correto do arquivo que você deseja testar
+//         std::string filename = "../instances/concentric_sol/isolation_mcortes2/20T1E1.sol";
+        
+//         // Chama a função e armazena o cromossomo gerado
+//         BRKGA::Chromosome chromossomo = gerador_cromossomo_th3(filename);
+        
+//         // Printar o cromossomo para verificar o conteúdo
+//         for (double value : chromossomo) {
+//             std::cout << value << " ";
+//         }
+//         std::cout << std::endl;
+
+//     } catch (const std::exception& e) {
+//         std::cerr << "Erro: " << e.what() << std::endl;
+//     }
+
+//     return 0;
+// }

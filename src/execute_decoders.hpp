@@ -51,4 +51,16 @@ void execute_coloracao3(
     std::string output_file_name, const unsigned num_threads
 );
 
+void execute_threshold3(
+    const unsigned seed, const std::string config_file, 
+    const unsigned max_run_time, const std::string instance_file, 
+    std::string output_file_name, const unsigned num_threads
+);
+
+void execute_multiplos_cortes2(
+    const unsigned seed, const std::string config_file, 
+    const unsigned max_run_time, const std::string instance_file, 
+    std::string output_file_name, const unsigned num_threads
+);
+
 #endif

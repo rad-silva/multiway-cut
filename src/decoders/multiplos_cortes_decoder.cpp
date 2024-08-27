@@ -16,30 +16,33 @@ using namespace BRKGA;
 
 //-----------------------------[ Constructor ]--------------------------------//
 
-MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) : 
-    instance(_instance),
-    init_adjacency_list(instance.num_nodes, -1),
-    position_edge_vector(instance.num_edges * 2, -1)
+MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) : instance(_instance),
+                                                                    init_adjacency_list(instance.num_nodes, -1),
+                                                                    position_edge_vector(instance.num_edges * 2, -1)
 {
     unsigned list_position = 0;
     unsigned edge_position = 0;
     unsigned u, v;
-    
-    for (u = 0; u < instance.num_nodes; u++) {
+
+    for (u = 0; u < instance.num_nodes; u++)
+    {
         init_adjacency_list[u] = list_position;
 
         std::vector<MCP_Instance::edge> u_list = instance.G[u];
 
-        for (unsigned i = 0; i < u_list.size(); i++) {
+        for (unsigned i = 0; i < u_list.size(); i++)
+        {
             v = u_list[i].dst;
 
-            if (u < v) {
+            if (u < v)
+            {
                 position_edge_vector[list_position + i] = edge_position;
                 edge_position++;
             }
-            else { // The position of (u,v) in the vector has already been previously determined from (v,u)
-                position_edge_vector[list_position + i] = 
-                    position_edge_vector[init_adjacency_list[v] + instance.get_edge_index(v,u)];
+            else
+            { // The position of (u,v) in the vector has already been previously determined from (v,u)
+                position_edge_vector[list_position + i] =
+                    position_edge_vector[init_adjacency_list[v] + instance.get_edge_index(v, u)];
             }
         }
 
@@ -50,8 +53,12 @@ MCP_Decoder_Cuts::MCP_Decoder_Cuts(const MCP_Instance &_instance) :
 //-------------------------------[ Decode ]-----------------------------------//
 
 BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-used */)
-{    
+{
     double accumulated_cost_cuts = 0;
+
+    double perturbed_capacity;
+
+    int N = 10;
 
     // cout << geracao/100 << " " << geracao % 100 << endl;
     // geracao++;
@@ -67,7 +74,7 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     // costs of the arcs perturbed by the chromosome
     //////////////////////////////////////////////////
 
-    unsigned u, v, cost; 
+    unsigned u, v, cost;
     unsigned edge_index;
     MCP_Instance::edge edge_e;
 
@@ -82,9 +89,13 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
             v = edge_e.dst;
             cost = edge_e.cost;
 
-            if (u < v) {
+            if (u < v)
+            {
                 edge_index = position_edge_vector[init_adjacency_list[u] + i];
-                G.add_edge_with_reverse(u, v, (cost * chromosome[edge_index]), i);
+
+                // [2^(N/2) * custo(e)] / [2^(N*(1-chromosome(e)))]
+                double perturbed_capacity = (double)(pow(2, N / 2) * cost) / (double)(pow(2, (N * (1 - chromosome[edge_index]))));
+                G.add_edge_with_reverse(u, v, perturbed_capacity, i);
             }
         }
     }
@@ -117,7 +128,7 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
     }
 
     //////////////////////////////////////////////////
-    // Calculates the number of times 
+    // Calculates the number of times
     // each arc appeared in a cut
     //////////////////////////////////////////////////
 
@@ -169,8 +180,10 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
         {
             edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
 
-            if (num_cuts_edge[edge_index] == 1){
-                cost_cut += instance.G[e.src][e.index].cost;}
+            if (num_cuts_edge[edge_index] == 1)
+            {
+                cost_cut += instance.G[e.src][e.index].cost;
+            }
         }
 
         if (cost_cut > highest_cost_cut)
@@ -180,8 +193,9 @@ BRKGA::fitness_t MCP_Decoder_Cuts::decode(Chromosome &chromosome, bool /* not-us
         for (highest_push_relabel_max_flow::edge e : cuts[i])
         {
             edge_index = position_edge_vector[init_adjacency_list[e.src] + e.index];
-            
-            if (num_cuts_edge[edge_index] >= 2) {
+
+            if (num_cuts_edge[edge_index] >= 2)
+            {
                 cost_cut += instance.G[e.src][e.index].cost;
                 num_cuts_edge[edge_index] = -1; // mark that the edge has already been computed
             }

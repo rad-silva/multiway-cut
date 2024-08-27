@@ -30,8 +30,8 @@ from glob import glob
 
 #---------------------[Parâmetros para alteração]---------------------------------
 
-# ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2", "coloracao3"]
-DECODERS = ["mcortes"]
+# ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2", "coloracao3", "threshold3"]
+DECODERS =  ["coloracao3", "mcortes2"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
 INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "all"
@@ -68,6 +68,7 @@ def execute_tests():
             out_file = str(teste_dir / Path(instance).stem) + ".sol"
             comando = script.replace("$instance", str(INSTANCES_PATH / instance))
             comando = comando.replace("$teste", str(TESTES_PATH / folder_test / out_file))
+            # comando = comando + f" > {str(Path(instance).stem) + '.sol'}"
             print(comando)
             os.system(comando)
 

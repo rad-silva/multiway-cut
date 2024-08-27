@@ -68,18 +68,21 @@ OBJS = \
 	./mcp/mcp_instance.o \
 	./decoders/threshold_decoder.o \
 	./decoders/threshold2_decoder.o \
+	./decoders/threshold3_decoder.o \
 	./decoders/coloracao_decoder.o \
 	./decoders/coloracao2_decoder.o \
 	./decoders/coloracao3_decoder.o \
 	./decoders/kruskal_decoder.o \
 	./decoders/kruskal_pert_decoder.o \
 	./decoders/multiplos_cortes_decoder.o \
+	./decoders/multiplos_cortes2_decoder.o \
 	./max_flow/graph.o \
 	./max_flow/highest_push_relabel.o \
 	./max_flow/list_node_height.o \
 	./max_flow/priority_queue.o \
 	./execute_decoders.o \
-	./write_file.o
+	./write_file.o\
+	./geradores/geradores_cromossomo.o
 
 # Main files.
 MAIN_MCP_OBJ = main_mcp.o
