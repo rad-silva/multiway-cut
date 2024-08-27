@@ -64,7 +64,9 @@ Mais detalhes os arquivos de instâncias são encontrados em seus respectivos di
 
 ## Como executar
 
-**`Compilação`**
+<br>
+
+**<u>Compilação</u>**
 
 Para compilar o projeto, é utilizado o arquivo `src/Makefile` que contém todas as importações dos arquivos a serem compilados, flags de otimização, etc.
 Certifique-se de que você está no diretório `src/` e execute o seguinte comando:
@@ -77,8 +79,9 @@ make clean
 ```
 Caso deseje incluir um novo arquivo para compilação, acrescente na variável `OBJS` do arquivo `src/Makefile` o nome do SEUARQUIVO.o (supondo que você tenha codado os arquivos SEUARQUIVO.hpp e SEUARQUIVO.cpp). Você pode acessar o Makefile e visualizar como os arquivos foram importados e os demais recursos. Caso não tenha familiaridade com as diretivas make, você pode colar o conteúdo do arquivo em um chatbot, como o chatGPT e o Gemini, e eles te fornecerão uma explicação detalhada dos comandos e definições.
 
+<br>
 
-**`Execução manual de instâncias`**
+**<u>Execução manual de instâncias</u>**
 
 Após a compilação bem-sucedida, você pode executar o programa da seguinte usando a linha de comando da seguinte maneira (certifique-se de estar no diretório `src/`):
 
@@ -94,8 +97,10 @@ cd src
 ./main_mcp 20 ./config.conf 10 ../instances/concentric_inst/20T/20T6E1.gr coloracao3 ../tetes/20T6E5.sol
 ```
 
+<br>
 
-**`Execução automatizada de instâncias`**
+**<u>Execução automatizada de instâncias</u>**
+
 
 Para executar testes com vários algoritmos, certifique-se de que você possui o Python 3 instalado em seu sistema.
 
@@ -113,8 +118,9 @@ Você também pode gerar arquivos .csv para cada conjunto de soluções contidas
 python3 src/cria_tabela.py
 ```
 
----
+<br>
 
+---
 
 Isso é tudo! Agora você está pronto para compilar e executar este projeto em C++ no Linux.
 Se precisar de mais informações ou tiver alguma dúvida, sinta-se à vontade para entrar em contato conosco.
