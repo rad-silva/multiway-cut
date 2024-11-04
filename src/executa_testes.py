@@ -31,16 +31,17 @@ from glob import glob
 #---------------------[Parâmetros para alteração]---------------------------------
 
 # ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2", "coloracao3", "threshold3"]
-DECODERS =  ["coloracao3"]
+DECODERS =  ["coloracao3", "kruskalpert"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
-INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "all"
+INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "new2"
 TESTES_PATH = DEFAULT_PATH / "testes"
 EXT_FILE = ".gr"
 
 MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
 CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
-SEED = "20"
+SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
+
 MAX_RUN_TIME = "600"
 
 #---------------------[Execução dos testes automatizados]---------------------------------
@@ -54,25 +55,33 @@ def execute_tests():
     instances = glob(str(INSTANCES_PATH / f"*{EXT_FILE}"))
     instances.sort()
 
+    instances = [
+      '/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/N5120K320M4N3.gr',
+      '/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/N5120K320M4N4.gr',
+      '/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/N5120K320M4N5.gr'
+    ]
+
     for decoder in DECODERS:
-        folder_test = f"{decoder}_{date}"
-        script = f"{MAIN_FILE_PATH} {SEED} {CONFIG_FILE_PATH} {MAX_RUN_TIME} $instance {decoder} $teste"
+        for seed in SEEDS:
+            folder_test = f"{decoder}_{seed}_{date}"
+            script = f"{MAIN_FILE_PATH} {seed} {CONFIG_FILE_PATH} {MAX_RUN_TIME} $instance {decoder} $teste"
 
-        teste_dir = TESTES_PATH / folder_test
-        if not teste_dir.exists():
-            print(f"Criando pasta {folder_test}")
-            teste_dir.mkdir(parents=True)
+            teste_dir = TESTES_PATH / folder_test
+            if not teste_dir.exists():
+                print(f"Criando pasta {folder_test}")
+                teste_dir.mkdir(parents=True)
 
-        # Executa programa para cada uma das instâncias
-        for instance in instances:
-            out_file = str(teste_dir / Path(instance).stem) + ".sol"
-            comando = script.replace("$instance", str(INSTANCES_PATH / instance))
-            comando = comando.replace("$teste", str(TESTES_PATH / folder_test / out_file))
-            # comando = comando + f" > {str(Path(instance).stem) + '.sol'}"
-            print(comando)
-            os.system(comando)
+            # Executa programa para cada uma das instâncias
+            for instance in instances:
+                out_file = str(teste_dir / Path(instance).stem) + ".sol"
+                comando = script.replace("$instance", str(INSTANCES_PATH / instance))
+                comando = comando.replace("$teste", str(TESTES_PATH / folder_test / out_file))
+                # comando = comando + f" > {str(Path(instance).stem) + '.sol'}"
+                print(comando)
+                os.system(comando)
 
-        print()
+            print()
+    print("\n\n\n")
 
 
 if __name__ == "__main__":

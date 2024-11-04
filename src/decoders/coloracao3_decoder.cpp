@@ -10,6 +10,8 @@
 using namespace std;
 using namespace BRKGA;
 
+// unsigned NUM_CROMOSOMO = 0;
+
 /*
     O que mudou:
 
@@ -63,6 +65,12 @@ MCP_Decoder_Coloracao3::MCP_Decoder_Coloracao3(const MCP_Instance& _instance):
 
 BRKGA::fitness_t MCP_Decoder_Coloracao3::decode(Chromosome& chromosome, bool /* not-used */)
 {
+    // cout << NUM_CROMOSOMO << ": ";
+    // for (auto x: chromosome)
+    //     cout << x << " ";
+    // cout << endl << endl;
+    // NUM_CROMOSOMO++;
+
     /// Armazena a cor de cada nó
     std::vector<int> color_node(instance.num_nodes, -1);
 

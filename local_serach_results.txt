@@ -1,0 +1,892 @@
+ricardo@ricardo-Aspire-A315-56:~/Downloads/multiway$ /bin/python3 /home/ricardo/Downloads/multiway/xxx.py
+Executando instancia N1280K80M4N1
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N1280K80M4N1 1 1 10
+
+input file: N1280K80M4N1
+****************************************Trial 1 of 1****************************************
+Vertices: 1280, Edges: 5419, K: 120
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 19595,000
+760469249ns
+760ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 27350.0, Time: 61999.003881 ms, Iterations: 37
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17519,000
+Cost: 17519.0, Time: -1.6411436683901E7 ms, Iterations: 134
+631283039423ns
+631283ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19394.0, Time: 62475.288399 ms, Iterations: 8
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17515,000
+Cost: 17515.0, Time: -1.7061621244902E7 ms, Iterations: 75
+612404253211ns
+612404ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 18834.0, Time: 61169.341043 ms, Iterations: 24
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17522,000
+Cost: 17522.0, Time: -1.7799806457245E7 ms, Iterations: 97
+486644490264ns
+486644ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 1280, Edges: 5419, K: 120, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 1959,500, Max: 1959,500, Min: 1959,500, Std: 0,000, Time: 760ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 1751,900, Max: 1751,900, Min: 1751,900, Std: 0,000, Time: 631283ms
+Avg Initial Ratio: 3167,700
+Avg Iterations: 134
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 1751,500, Max: 1751,500, Min: 1751,500, Std: 0,000, Time: 612404ms
+Avg Initial Ratio: 2004,100
+Avg Iterations: 75
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 1752,200, Max: 1752,200, Min: 1752,200, Std: 0,000, Time: 486644ms
+Avg Initial Ratio: 1959,500
+Avg Iterations: 97
+java.io.FileNotFoundException: data/csv/N1280K80M4N1.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N1280K80M4N1: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N1280K80M4N1', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N1280K80M4N2
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N1280K80M4N2 1 1 10
+
+input file: N1280K80M4N2
+****************************************Trial 1 of 1****************************************
+Vertices: 1280, Edges: 5405, K: 120
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 19567,000
+583776278ns
+583ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 25539.0, Time: 61370.62765 ms, Iterations: 42
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17512,000
+Cost: 17512.0, Time: -1.8157846066211E7 ms, Iterations: 129
+616722929255ns
+616722ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19175.0, Time: 64597.133667 ms, Iterations: 16
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17507,000
+Cost: 17507.0, Time: -1.8972469483512E7 ms, Iterations: 76
+418841307993ns
+418841ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 18662.0, Time: 62293.320989 ms, Iterations: 26
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17502,000
+Cost: 17502.0, Time: -1.9216394515789E7 ms, Iterations: 83
+593775537856ns
+593775ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 1280, Edges: 5405, K: 120, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 1956,700, Max: 1956,700, Min: 1956,700, Std: 0,000, Time: 583ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 1751,200, Max: 1751,200, Min: 1751,200, Std: 0,000, Time: 616722ms
+Avg Initial Ratio: 3068,900
+Avg Iterations: 129
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 1750,700, Max: 1750,700, Min: 1750,700, Std: 0,000, Time: 418841ms
+Avg Initial Ratio: 1996,400
+Avg Iterations: 76
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 1750,200, Max: 1750,200, Min: 1750,200, Std: 0,000, Time: 593775ms
+Avg Initial Ratio: 1956,700
+Avg Iterations: 83
+java.io.FileNotFoundException: data/csv/N1280K80M4N2.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N1280K80M4N2: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N1280K80M4N2', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N1280K80M4N3
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N1280K80M4N3 1 1 10
+
+input file: N1280K80M4N3
+****************************************Trial 1 of 1****************************************
+Vertices: 1280, Edges: 5433, K: 120
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 20488,000
+653884545ns
+653ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 26802.0, Time: 61450.630354 ms, Iterations: 41
+600 seconds reached:
+Local Search: The weight of the multiway cut: 18212,000
+Cost: 18212.0, Time: -1.9764032764373E7 ms, Iterations: 133
+641355060070ns
+641355ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19763.0, Time: 61684.685269 ms, Iterations: 9
+600 seconds reached:
+Local Search: The weight of the multiway cut: 18198,000
+Cost: 18198.0, Time: -2.0472622186376E7 ms, Iterations: 75
+574142600551ns
+574142ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19533.0, Time: 60816.40359 ms, Iterations: 24
+600 seconds reached:
+Local Search: The weight of the multiway cut: 18198,000
+Cost: 18198.0, Time: -2.105917973438E7 ms, Iterations: 92
+561746847892ns
+561746ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 1280, Edges: 5433, K: 120, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 2048,800, Max: 2048,800, Min: 2048,800, Std: 0,000, Time: 653ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 1821,200, Max: 1821,200, Min: 1821,200, Std: 0,000, Time: 641355ms
+Avg Initial Ratio: 3141,200
+Avg Iterations: 133
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 1819,800, Max: 1819,800, Min: 1819,800, Std: 0,000, Time: 574142ms
+Avg Initial Ratio: 2029,900
+Avg Iterations: 75
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 1819,800, Max: 1819,800, Min: 1819,800, Std: 0,000, Time: 561746ms
+Avg Initial Ratio: 2048,800
+Avg Iterations: 92
+java.io.FileNotFoundException: data/csv/N1280K80M4N3.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N1280K80M4N3: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N1280K80M4N3', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N1280K80M4N4
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N1280K80M4N4 1 1 10
+
+input file: N1280K80M4N4
+****************************************Trial 1 of 1****************************************
+Vertices: 1280, Edges: 5438, K: 120
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 20425,000
+584970198ns
+584ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 25852.0, Time: 61220.452203 ms, Iterations: 42
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17956,000
+Cost: 17956.0, Time: -2.1601286954623E7 ms, Iterations: 136
+582702883994ns
+582702ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19645.0, Time: 60332.061768 ms, Iterations: 10
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17947,000
+Cost: 17947.0, Time: -2.2300408252048E7 ms, Iterations: 83
+466306588538ns
+466306ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19234.0, Time: 61108.522536 ms, Iterations: 25
+600 seconds reached:
+Local Search: The weight of the multiway cut: 17956,000
+Cost: 17956.0, Time: -2.2758369529136E7 ms, Iterations: 91
+474667396072ns
+474667ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 1280, Edges: 5438, K: 120, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 2042,500, Max: 2042,500, Min: 2042,500, Std: 0,000, Time: 584ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 1795,600, Max: 1795,600, Min: 1795,600, Std: 0,000, Time: 582702ms
+Avg Initial Ratio: 3070,600
+Avg Iterations: 136
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 1794,700, Max: 1794,700, Min: 1794,700, Std: 0,000, Time: 466306ms
+Avg Initial Ratio: 2031,900
+Avg Iterations: 83
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 1795,600, Max: 1795,600, Min: 1795,600, Std: 0,000, Time: 474667ms
+Avg Initial Ratio: 2042,500
+Avg Iterations: 91
+java.io.FileNotFoundException: data/csv/N1280K80M4N4.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N1280K80M4N4: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N1280K80M4N4', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N1280K80M4N5
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N1280K80M4N5 1 1 10
+
+input file: N1280K80M4N5
+****************************************Trial 1 of 1****************************************
+Vertices: 1280, Edges: 5467, K: 120
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 20261,000
+601318648ns
+601ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 26451.0, Time: 60584.497978 ms, Iterations: 41
+600 seconds reached:
+Local Search: The weight of the multiway cut: 18413,000
+Cost: 18413.0, Time: -2.3063150169082E7 ms, Iterations: 136
+645924287073ns
+645924ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 20184.0, Time: 61513.854486 ms, Iterations: 8
+600 seconds reached:
+Local Search: The weight of the multiway cut: 18404,000
+Cost: 18404.0, Time: -2.3780434712627E7 ms, Iterations: 79
+574583939342ns
+574583ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 19629.0, Time: 61989.035222 ms, Iterations: 24
+600 seconds reached:
+Local Search: The weight of the multiway cut: 18409,000
+Cost: 18409.0, Time: -2.4272132203917E7 ms, Iterations: 93
+657486666287ns
+657486ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 1280, Edges: 5467, K: 120, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 2026,100, Max: 2026,100, Min: 2026,100, Std: 0,000, Time: 601ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 1841,300, Max: 1841,300, Min: 1841,300, Std: 0,000, Time: 645924ms
+Avg Initial Ratio: 3147,300
+Avg Iterations: 136
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 1840,400, Max: 1840,400, Min: 1840,400, Std: 0,000, Time: 574583ms
+Avg Initial Ratio: 2079,400
+Avg Iterations: 79
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 1840,900, Max: 1840,900, Min: 1840,900, Std: 0,000, Time: 657486ms
+Avg Initial Ratio: 2026,100
+Avg Iterations: 93
+java.io.FileNotFoundException: data/csv/N1280K80M4N5.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N1280K80M4N5: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N1280K80M4N5', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N2560K160M4N2
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N2560K160M4N2 1 1 10
+
+input file: N2560K160M4N2
+****************************************Trial 1 of 1****************************************
+Vertices: 2560, Edges: 10894, K: 240
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 40433,000
+1122524619ns
+1122ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 61635.0, Time: 60723.020687 ms, Iterations: 14
+600 seconds reached:
+Local Search: The weight of the multiway cut: 52167,000
+Cost: 52167.0, Time: -2.4984299523912E7 ms, Iterations: 92
+605298925373ns
+605298ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 39524.0, Time: 69259.458918 ms, Iterations: 2
+600 seconds reached:
+Local Search: The weight of the multiway cut: 39246,000
+Cost: 39246.0, Time: -2.5592673165473E7 ms, Iterations: 20
+602264549980ns
+602264ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 40260.0, Time: 61456.965936 ms, Iterations: 7
+600 seconds reached:
+Local Search: The weight of the multiway cut: 38540,000
+Cost: 38540.0, Time: -2.6196937970184E7 ms, Iterations: 58
+600311207878ns
+600311ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 2560, Edges: 10894, K: 240, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 4043,300, Max: 4043,300, Min: 4043,300, Std: 0,000, Time: 1122ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 5216,700, Max: 5216,700, Min: 5216,700, Std: 0,000, Time: 605298ms
+Avg Initial Ratio: 6305,800
+Avg Iterations: 92
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 3924,600, Max: 3924,600, Min: 3924,600, Std: 0,000, Time: 602264ms
+Avg Initial Ratio: 4047,600
+Avg Iterations: 20
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 3854,000, Max: 3854,000, Min: 3854,000, Std: 0,000, Time: 600311ms
+Avg Initial Ratio: 4043,300
+Avg Iterations: 58
+java.io.FileNotFoundException: data/csv/N2560K160M4N2.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N2560K160M4N2: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N2560K160M4N2', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N2560K160M4N3
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N2560K160M4N3 1 1 10
+
+input file: N2560K160M4N3
+****************************************Trial 1 of 1****************************************
+Vertices: 2560, Edges: 10877, K: 240
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 39371,000
+900396569ns
+900ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 59733.0, Time: 60817.645533 ms, Iterations: 13
+600 seconds reached:
+Local Search: The weight of the multiway cut: 51110,000
+Cost: 51110.0, Time: -2.6797252215179E7 ms, Iterations: 87
+602806823014ns
+602806ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 38471.0, Time: 80654.216111 ms, Iterations: 3
+600 seconds reached:
+Local Search: The weight of the multiway cut: 38217,000
+Cost: 38217.0, Time: -2.7395128153531E7 ms, Iterations: 26
+607769083250ns
+607769ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 39125.0, Time: 64445.544278 ms, Iterations: 8
+600 seconds reached:
+Local Search: The weight of the multiway cut: 37545,000
+Cost: 37545.0, Time: -2.7996973118341E7 ms, Iterations: 55
+613730205831ns
+613730ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 2560, Edges: 10877, K: 240, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 3937,100, Max: 3937,100, Min: 3937,100, Std: 0,000, Time: 900ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 5111,000, Max: 5111,000, Min: 5111,000, Std: 0,000, Time: 602806ms
+Avg Initial Ratio: 6135,000
+Avg Iterations: 87
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 3821,700, Max: 3821,700, Min: 3821,700, Std: 0,000, Time: 607769ms
+Avg Initial Ratio: 3954,100
+Avg Iterations: 26
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 3754,500, Max: 3754,500, Min: 3754,500, Std: 0,000, Time: 613730ms
+Avg Initial Ratio: 3937,100
+Avg Iterations: 55
+java.io.FileNotFoundException: data/csv/N2560K160M4N3.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N2560K160M4N3: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N2560K160M4N3', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N2560K160M4N4
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N2560K160M4N4 1 1 10
+
+input file: N2560K160M4N4
+****************************************Trial 1 of 1****************************************
+Vertices: 2560, Edges: 10873, K: 240
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 41021,000
+962484469ns
+962ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 61277.0, Time: 65209.719346 ms, Iterations: 14
+600 seconds reached:
+Local Search: The weight of the multiway cut: 52610,000
+Cost: 52610.0, Time: -2.8626106156559E7 ms, Iterations: 84
+600893659194ns
+600893ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 39959.0, Time: 63009.302747 ms, Iterations: 4
+600 seconds reached:
+Local Search: The weight of the multiway cut: 39729,000
+Cost: 39729.0, Time: -2.9218034734118E7 ms, Iterations: 27
+609913475199ns
+609913ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 40837.0, Time: 60648.502937 ms, Iterations: 5
+600 seconds reached:
+Local Search: The weight of the multiway cut: 38907,000
+Cost: 38907.0, Time: -2.9830281968952E7 ms, Iterations: 53
+607618406615ns
+607618ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 2560, Edges: 10873, K: 240, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 4102,100, Max: 4102,100, Min: 4102,100, Std: 0,000, Time: 962ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 5261,000, Max: 5261,000, Min: 5261,000, Std: 0,000, Time: 600893ms
+Avg Initial Ratio: 6313,500
+Avg Iterations: 84
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 3972,900, Max: 3972,900, Min: 3972,900, Std: 0,000, Time: 609913ms
+Avg Initial Ratio: 4085,500
+Avg Iterations: 27
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 3890,700, Max: 3890,700, Min: 3890,700, Std: 0,000, Time: 607618ms
+Avg Initial Ratio: 4102,100
+Avg Iterations: 53
+java.io.FileNotFoundException: data/csv/N2560K160M4N4.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N2560K160M4N4: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N2560K160M4N4', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N2560K160M4N5
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N2560K160M4N5 1 1 10
+
+input file: N2560K160M4N5
+****************************************Trial 1 of 1****************************************
+Vertices: 2560, Edges: 10917, K: 240
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 40540,000
+918167357ns
+918ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 61303.0, Time: 61466.004583 ms, Iterations: 13
+600 seconds reached:
+Local Search: The weight of the multiway cut: 52007,000
+Cost: 52007.0, Time: -3.0441873478674E7 ms, Iterations: 91
+606120990708ns
+606120ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 39788.0, Time: 124541.593643 ms, Iterations: 4
+600 seconds reached:
+Local Search: The weight of the multiway cut: 39397,000
+Cost: 39397.0, Time: -3.1035040894501E7 ms, Iterations: 27
+619114638388ns
+619114ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 40288.0, Time: 60863.857841 ms, Iterations: 9
+600 seconds reached:
+Local Search: The weight of the multiway cut: 38604,000
+Cost: 38604.0, Time: -3.1648725715649E7 ms, Iterations: 52
+624581682094ns
+624581ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 2560, Edges: 10917, K: 240, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 4054,000, Max: 4054,000, Min: 4054,000, Std: 0,000, Time: 918ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 5200,700, Max: 5200,700, Min: 5200,700, Std: 0,000, Time: 606120ms
+Avg Initial Ratio: 6266,900
+Avg Iterations: 91
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 3939,700, Max: 3939,700, Min: 3939,700, Std: 0,000, Time: 619114ms
+Avg Initial Ratio: 4091,300
+Avg Iterations: 27
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 3860,400, Max: 3860,400, Min: 3860,400, Std: 0,000, Time: 624581ms
+Avg Initial Ratio: 4054,000
+Avg Iterations: 52
+java.io.FileNotFoundException: data/csv/N2560K160M4N5.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N2560K160M4N5: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N2560K160M4N5', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N5120K320M4N1
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N5120K320M4N1 1 1 10
+
+input file: N5120K320M4N1
+****************************************Trial 1 of 1****************************************
+Vertices: 5120, Edges: 21775, K: 480
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 79905,000
+3097991723ns
+3097ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 122604.0, Time: 64179.812192 ms, Iterations: 5
+600 seconds reached:
+Local Search: The weight of the multiway cut: 119343,000
+Cost: 119343.0, Time: -3.2298118033537E7 ms, Iterations: 29
+606267233047ns
+606267ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 77558.0, Time: 220041.732633 ms, Iterations: 2
+600 seconds reached:
+Local Search: The weight of the multiway cut: 77543,000
+Cost: 77543.0, Time: -3.207729414454E7 ms, Iterations: 4
+1433408061019ns
+1433408ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 79840.0, Time: 98702.10223 ms, Iterations: 4
+600 seconds reached:
+Local Search: The weight of the multiway cut: 79246,000
+Cost: 79246.0, Time: -3.4325362537744E7 ms, Iterations: 17
+618868607310ns
+618868ms
+All threads completed the current graph
+
+Trials: 1, Vertices: 5120, Edges: 21775, K: 480, Gap Count1: 0, Gap Count2: 0, Output Count: 0
+
+Isolation Heuristic
+Avg: 7990,500, Max: 7990,500, Min: 7990,500, Std: 0,000, Time: 3097ms
+
+Local Search (epsilon = 1.0, OneEach)
+Avg: 11934,300, Max: 11934,300, Min: 11934,300, Std: 0,000, Time: 606267ms
+Avg Initial Ratio: 12303,100
+Avg Iterations: 29
+
+Local Search (epsilon = 1.0, Clumps)
+Avg: 7754,300, Max: 7754,300, Min: 7754,300, Std: 0,000, Time: 1433408ms
+Avg Initial Ratio: 7966,200
+Avg Iterations: 4
+
+Local Search (epsilon = 1.0, Isolation Heuristic)
+Avg: 7924,600, Max: 7924,600, Min: 7924,600, Std: 0,000, Time: 618868ms
+Avg Initial Ratio: 7990,500
+Avg Iterations: 17
+java.io.FileNotFoundException: data/csv/N5120K320M4N1.csv (Arquivo ou diretório inexistente)
+        at java.base/java.io.FileOutputStream.open0(Native Method)
+        at java.base/java.io.FileOutputStream.open(FileOutputStream.java:298)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:237)
+        at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:126)
+        at library.Out.<init>(Out.java:78)
+        at Main.main(Main.java:1094)
+Exception in thread "main" java.lang.NullPointerException
+        at library.Out.println(Out.java:123)
+        at Main.main(Main.java:1095)
+Erro ao executar o comando para N5120K320M4N1: Command '['/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java', '-javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin', '-Dfile.encoding=UTF-8', '-classpath', '/home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar', 'Main', 'N5120K320M4N1', '1', '1', '10']' returned non-zero exit status 1.
+
+
+
+Executando instancia N5120K320M4N2
+
+/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -javaagent:/snap/intellij-idea-community/537/lib/idea_rt.jar=42643:/snap/intellij-idea-community/537/bin -Dfile.encoding=UTF-8 -classpath /home/ricardo/Downloads/m-artigo/MultiwayCut/out/production/MultiwayCut:/home/ricardo/ibm/ILOG/CPLEX_Studio2211/cplex/lib/cplex.jar:/home/ricardo/guava/guava-23.0.jar Main N5120K320M4N2 1 1 10
+
+input file: N5120K320M4N2
+****************************************Trial 1 of 1****************************************
+Vertices: 5120, Edges: 21803, K: 480
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 80985,000
+3157539061ns
+3157ms
+****************************************Repitition 1 of 1(1/1)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 124891.0, Time: 69850.92969 ms, Iterations: 4
+600 seconds reached:
+Local Search: The weight of the multiway cut: 122020,000
+Cost: 122020.0, Time: -3.4946697587443E7 ms, Iterations: 28
+623295811902ns
+623295ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 79672.0, Time: 171085.235381 ms, Iterations: 2
+600 seconds reached:
+Local Search: The weight of the multiway cut: 79638,000
+Cost: 79638.0, Time: -3.5417675225997E7 ms, Iterations: 4
+775670484374ns
+775670ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 80838.0, Time: 96256.83328 ms, Iterations: 2
+600 seconds reached:
+Local Search: The weight of the multiway cut: 80385,000
+Cost: 80385.0, Time: -3.6326304661129E7 ms, Iterations: 14
+642827364102ns
+642827ms
+All threads completed the current graph
+
+
+
+
+
+
+
+
+
+****************************************Trial 1 of 5****************************************
+
+
+/home/ricardo/Downloads/artigo/MultiwayCut/data/concefiles/N5120K320M4N3.gr
+
+Executando instancia N5120K320M4N3
+
+Vertices: 5120, Edges: 21795, K: 480
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 81022,000
+3542921139ns
+3542ms
+****************************************Repitition 1 of 1(1/5)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 124888.0, Time: 67752.368505 ms, Iterations: 5
+600 seconds reached:
+Cost: 121465.0, Time: 625205.786834 ms, Iterations: 33
+Local Search: The weight of the multiway cut: 121465,000
+Iterations: 33
+625210468475ns
+625210ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 79271.0, Time: 139293.413235 ms, Iterations: 4
+600 seconds reached:
+Cost: 79229.0, Time: 1109133.505485 ms, Iterations: 8
+Local Search: The weight of the multiway cut: 79229,000
+Iterations: 8
+1109134879831ns
+1109134ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 80971.0, Time: 99302.511071 ms, Iterations: 3
+600 seconds reached:
+Cost: 80224.0, Time: 633050.886316 ms, Iterations: 17
+Local Search: The weight of the multiway cut: 80224,000
+Iterations: 17
+633051847756ns
+633051ms
+All threads completed the current graph
+****************************************Trial 2 of 5****************************************
+
+
+/home/ricardo/Downloads/artigo/MultiwayCut/data/concefiles/90T4E2.gr
+
+Executando instancia N5120K320M4N4
+
+Vertices: 5120, Edges: 21810, K: 480
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 80079,000
+2525936616ns
+3034ms
+****************************************Repitition 1 of 1(2/5)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 122428.0, Time: 67640.472495 ms, Iterations: 4
+600 seconds reached:
+Cost: 119865.0, Time: 611336.26866 ms, Iterations: 27
+Local Search: The weight of the multiway cut: 119865,000
+Iterations: 27
+611336676846ns
+618273ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 78759.0, Time: 67175.873322 ms, Iterations: 2
+600 seconds reached:
+Cost: 78758.0, Time: 740144.304266 ms, Iterations: 3
+Local Search: The weight of the multiway cut: 78758,000
+Iterations: 3
+740144870643ns
+924639ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 79805.0, Time: 137966.928743 ms, Iterations: 5
+600 seconds reached:
+Cost: 79463.0, Time: 681431.480103 ms, Iterations: 15
+Local Search: The weight of the multiway cut: 79463,000
+Iterations: 15
+681432095568ns
+657241ms
+All threads completed the current graph
+****************************************Trial 3 of 5****************************************
+
+
+/home/ricardo/Downloads/artigo/MultiwayCut/data/concefiles/90T4E3.gr
+
+Executando instancia N5120K320M4N5
+
+Vertices: 5120, Edges: 21768, K: 480
+Isolation Heuristic
+Isolation: The weight of the multiway cut: 79856,000
+3058517120ns
+3042ms
+****************************************Repitition 1 of 1(3/5)****************************************
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 122998.0, Time: 67849.274805 ms, Iterations: 4
+600 seconds reached:
+Cost: 119956.0, Time: 611470.537205 ms, Iterations: 28
+Local Search: The weight of the multiway cut: 119956,000
+Iterations: 28
+611470964233ns
+616006ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 77768.0, Time: 647083.572054 ms, Iterations: 2
+600 seconds reached:
+Cost: 77768.0, Time: 647083.572054 ms, Iterations: 2
+Local Search: The weight of the multiway cut: 77768,000
+Iterations: 2
+647084192172ns
+832121ms
+Local Search (epsilon: 1,000)
+60 seconds reached:
+Cost: 79838.0, Time: 135181.954284 ms, Iterations: 2
+600 seconds reached:
+Cost: 79657.0, Time: 603906.091568 ms, Iterations: 9
+Local Search: The weight of the multiway cut: 79657,000
+Iterations: 9
+603906709759ns
+639463ms
+All threads completed the current graph
+
+
+
+
+
+
+
+
+
+
+
+

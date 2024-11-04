@@ -36,6 +36,8 @@ def create_table():
 
     for teste_name in testes_names:
 
+        alg, seed, year, month, day = teste_name.split("_")
+
         # Lista todos os arquivos presentes em /TESTE_PATH/test_name
         sol_files_names = [
             f
@@ -60,7 +62,7 @@ def create_table():
             "--" + teste_name + "\n"
             "Instance,Nodes,Edges,Terminals,Valid Solution,"
             "Best cost,Num edges cut,Last update iteration,"
-            "Last update time,Final iteration,Final time"
+            "Last update time,Final iteration,Final time,seed"
         )
 
         # Cria e abre o arquivo decoder_name.csv no diretório do teste
@@ -71,7 +73,7 @@ def create_table():
         data_file.write(
             "Instance,Nodes,Edges,Terminals,Valid Solution,"
             "Best cost,Num edges cut,Last update iteration,"
-            "Last update time,Final iteration,Final time\n"
+            "Last update time,Final iteration,Final time,seed\n"
         )
 
         for i in sol_files_names:
@@ -93,6 +95,8 @@ def create_table():
                 for line in solucao
                 if ":" in line
             ]
+
+            data.append(seed)
 
             # Grava todo o conteúdo separado por vírgula em uma linha no arquivo de saída
             data_file.write(",".join(data) + "\n")

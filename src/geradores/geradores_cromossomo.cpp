@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <filesystem> 
+
 
 using namespace std;
 
@@ -127,7 +129,8 @@ BRKGA::Chromosome gerador_cromossomo_col3(string filename) {
 
     /// Constrói um grafo a aprtir da instancia base
 
-    string instance_path = "../instances/concentric_inst/all/" + filename.substr(filename.length() - 10, 6) + ".gr";
+    string instance_name = filesystem::path(filename).stem().string();
+    string instance_path = "/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/" + instance_name + ".gr";
 
     cout << instance_path << endl;
 

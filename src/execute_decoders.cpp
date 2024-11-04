@@ -27,6 +27,7 @@
 #include <stdexcept>
 #include <vector>
 #include <queue>
+#include <filesystem> 
 
 using namespace std;
 
@@ -578,6 +579,8 @@ void execute_kruskal_pert(
 
         // algorithm.reset(); // chama #initialize(true)
 
+
+
         // BRKGA::Chromosome initial_chromosome(chromossome_size, 0.5);
         
         // // {
@@ -585,9 +588,12 @@ void execute_kruskal_pert(
         //     vector<BRKGA::Chromosome>(1, initial_chromosome));
         // // }
 
-        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
 
-        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+
+        // string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+        string instance_name = filesystem::path(instance_file).stem().string();
+
+        std::string caminho_arquivo_solucao_isolation = "/home/ricardo/Downloads/multiway/data/ih_sols_new2/" + instance_name + ".sol";
 
         // {
         algorithm.setInitialPopulation(
@@ -1316,9 +1322,12 @@ void execute_coloracao3(
 
         // algorithm.reset(); // chama #initialize(true)
 
-        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+        // string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+        string instance_name = filesystem::path(instance_file).stem().string();
 
-        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+        // string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+        std::string caminho_arquivo_solucao_isolation = "/home/ricardo/Downloads/multiway/data/ih_sols_new2/" + instance_name + ".sol";
+
 
         // {
         algorithm.setInitialPopulation(
@@ -1525,23 +1534,23 @@ void execute_multiplos_cortes2(
             chromossome_size, brkga_params, num_threads
         );
 
-        // algorithm.reset(); // chama #initialize(true)
+        algorithm.reset(); // chama #initialize(true)
 
-        // BRKGA::Chromosome initial_chromosome(chromossome_size, 0.5);
+        BRKGA::Chromosome initial_chromosome(chromossome_size, 0.5);
         
-        // // {
-        // algorithm.setInitialPopulation(
-        //     vector<BRKGA::Chromosome>(1, initial_chromosome));
-        // // }
-
-        string instance_name = instance_file.substr(instance_file.length() - 9, 6);
-
-        string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
-
         // {
         algorithm.setInitialPopulation(
-            vector<BRKGA::Chromosome>(1, gerador_cromossomo_krp(caminho_arquivo_solucao_isolation)));
+            vector<BRKGA::Chromosome>(1, initial_chromosome));
         // }
+
+        // string instance_name = instance_file.substr(instance_file.length() - 9, 6);
+
+        // string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
+
+        // // {
+        // algorithm.setInitialPopulation(
+        //     vector<BRKGA::Chromosome>(1, gerador_cromossomo_krp(caminho_arquivo_solucao_isolation)));
+        // // }
 
         ////////////////////////////////////////
         // Find good solutions / evolve

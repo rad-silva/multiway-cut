@@ -12,6 +12,8 @@
 using namespace std;
 using namespace BRKGA;
 
+// unsigned NUM_CROMOSOMO = 0;
+
 // int geracao = 0;
 
 //-----------------------------[ Constructor ]--------------------------------//
@@ -54,9 +56,11 @@ MCP_Decoder_Cuts2::MCP_Decoder_Cuts2(const MCP_Instance &_instance) : instance(_
 
 BRKGA::fitness_t MCP_Decoder_Cuts2::decode(Chromosome &chromosome, bool /* not-used */)
 {
-    // for (int x = 0; x < chromosome.size(); x++){
-    //     cout << chromosome[x] << " ";
-    // } cout << endl << endl;
+    // cout << NUM_CROMOSOMO << ": ";
+    // for (auto x: chromosome)
+    //     cout << x << " ";
+    // cout << endl << endl;
+    // NUM_CROMOSOMO++;
 
     //////////////////////////////////////////////////
     // Cria um grafo auxiliar com os custos dos
@@ -280,29 +284,29 @@ BRKGA::fitness_t MCP_Decoder_Cuts2::decode(Chromosome &chromosome, bool /* not-u
         }
     }
 
-    // typedef struct {unsigned src; unsigned dst; unsigned cost; unsigned edge_index;} aux_edge;
-    // cout << endl;
-    // cout << "p " << "edge " << instance.num_nodes << " " << instance.num_edges << endl;
-    // cout << "c " << cost_of_multiway_cut << endl;
+    typedef struct {unsigned src; unsigned dst; unsigned cost; unsigned edge_index;} aux_edge;
+    cout << endl;
+    cout << "p " << "edge " << instance.num_nodes << " " << instance.num_edges << endl;
+    cout << "c " << cost_of_multiway_cut << endl;
 
-    // for (unsigned u = 0; u < instance.num_nodes; u++) {
+    for (unsigned u = 0; u < instance.num_nodes; u++) {
 
-    //     const std::vector<MCP_Instance::edge>& u_list = instance.G[u];
+        const std::vector<MCP_Instance::edge>& u_list = instance.G[u];
 
-    //     for (unsigned i = 0; i < u_list.size(); i++)
-    //     {
-    //         v = u_list[i].dst;
-    //         edge_index = position_edge_vector[init_adjacency_list[u] + i];
-    //         cost = u_list[i].cost;
+        for (unsigned i = 0; i < u_list.size(); i++)
+        {
+            v = u_list[i].dst;
+            edge_index = position_edge_vector[init_adjacency_list[u] + i];
+            cost = u_list[i].cost;
 
-    //         if (num_cuts_edge[edge_index] > 0) {
-    //             cout << "e " << u << " " << v << " " << cost << " " << edge_index << endl;
-    //             num_cuts_edge[edge_index] = 0;
-    //         }
-    //     }
-    // }
+            if (num_cuts_edge[edge_index] > 0) {
+                cout << "e " << u << " " << v << " " << cost << " " << edge_index << endl;
+                num_cuts_edge[edge_index] = 0;
+            }
+        }
+    }
 
-    // exit(1);
+    exit(1);
 
     
     return cost_of_multiway_cut;

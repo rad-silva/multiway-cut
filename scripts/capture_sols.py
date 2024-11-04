@@ -89,10 +89,10 @@ def process_directory(directory):
             all_results.update(file_results)
 
     # Salvar os resultados em CSV
-    save_to_csv(all_results, 'multiway_cut_results.csv')
+    save_to_csv(all_results, 'multiway_cut_results_new.csv')
 
 # Caminho do diretório com os arquivos de log
-log_directory = "/home/ricardo/Downloads/multiway/data/raw_results"
+log_directory = "/home/ricardo/Downloads/multiway/instances/concentric_inst/new"
 
 # Processar o diretório
 process_directory(log_directory)

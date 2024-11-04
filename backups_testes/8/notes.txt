@@ -1,0 +1,1 @@
+rodando cada isntnacia para 5 seeds diferentes utilizando pop = 1000, e 600 segundos
