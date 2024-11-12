@@ -7,7 +7,7 @@ import os
 from os.path import isfile, join
 
 
-TESTE_PATH = "/home/ricardo/Downloads/multiway//testes"
+TESTE_PATH = "/home/ricardo/Downloads/multiway/testes"
 EXTENSION_FILE = ".sol"
 
 def create_table():
@@ -36,7 +36,7 @@ def create_table():
 
     for teste_name in testes_names:
 
-        alg, seed, year, month, day = teste_name.split("_")
+        alg, year, month, day = teste_name.split("_")
 
         # Lista todos os arquivos presentes em /TESTE_PATH/test_name
         sol_files_names = [
@@ -60,7 +60,7 @@ def create_table():
 
         print(
             "--" + teste_name + "\n"
-            "Instance,Nodes,Edges,Terminals,Valid Solution,"
+            "Algoritmo,Instance,Nodes,Edges,Terminals,Valid Solution,"
             "Best cost,Num edges cut,Last update iteration,"
             "Last update time,Final iteration,Final time,seed"
         )
@@ -71,14 +71,15 @@ def create_table():
 
         # Grava a linha de cabeçalho no arquivo
         data_file.write(
-            "Instance,Nodes,Edges,Terminals,Valid Solution,"
+            "Algoritmo,Instance,Nodes,Edges,Terminals,Valid Solution,"
             "Best cost,Num edges cut,Last update iteration,"
             "Last update time,Final iteration,Final time,seed\n"
         )
 
         for i in sol_files_names:
 
-            instance_name = i.split(".")[0]
+            instance_name = i.split(".")[0][:-8]
+            seed = i.split(".")[0][-7:]
 
             path_sol_file_name = TESTE_PATH + "/" + teste_name + "/" + i
             file_solution = open(path_sol_file_name, "r", encoding="utf-8")
@@ -90,13 +91,11 @@ def create_table():
             solucao = solucao[:10]
 
             # Extrai o conteúdo de cada linha do arquivo (título:conteúdo)
-            data = [instance_name] + [
+            data = [alg, instance_name] + [
                 line.strip().split(": ")[1]
                 for line in solucao
                 if ":" in line
-            ]
-
-            data.append(seed)
+            ] + [seed]
 
             # Grava todo o conteúdo separado por vírgula em uma linha no arquivo de saída
             data_file.write(",".join(data) + "\n")

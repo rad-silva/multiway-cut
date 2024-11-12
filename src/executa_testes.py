@@ -31,7 +31,7 @@ from glob import glob
 #---------------------[Parâmetros para alteração]---------------------------------
 
 # ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2", "coloracao3", "threshold3"]
-DECODERS =  ["coloracao3", "kruskalpert"]
+DECODERS =  ["kruskalpert"]
 # DECODERS = ["mcortes2"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
@@ -42,8 +42,8 @@ EXT_FILE = ".gr"
 
 MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
 CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
-SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
-# SEEDS = ["1328963"]
+# SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
+SEEDS = ["1884283","1694354","1271039","1887782"]
 
 
 MAX_RUN_TIME = "600"
