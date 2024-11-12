@@ -130,7 +130,7 @@ BRKGA::Chromosome gerador_cromossomo_col3(string filename) {
     /// Constrói um grafo a aprtir da instancia base
 
     string instance_name = filesystem::path(filename).stem().string();
-    string instance_path = "/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/" + instance_name + ".gr";
+    string instance_path = "/home/ricardo/Downloads/multiway/data2/basic_instances/" + instance_name + ".gr";
 
     cout << instance_path << endl;
 

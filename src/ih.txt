@@ -1,8 +1,3 @@
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 1280 5419
 c 24405
 e 0 1086 17 1
@@ -3111,11 +3106,6 @@ e 1239 1247 49 5408
 e 1240 1274 1 5410
 e 1242 1266 1 5412
 e 1265 1267 45 5418
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 1280 5405
 c 24475
 e 0 801 1 0
@@ -6165,11 +6155,6 @@ e 1261 1273 1 5401
 e 1265 1277 1 5402
 e 1267 1277 1 5403
 e 1270 1278 24 5404
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 1280 5433
 c 24990
 e 0 897 5 0
@@ -9192,11 +9177,6 @@ e 1233 1242 11 5428
 e 1235 1243 1 5429
 e 1243 1268 2 5431
 e 1246 1249 1 5432
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 1280 5438
 c 24778
 e 0 1018 2 1
@@ -12198,11 +12178,6 @@ e 1238 1260 1 5432
 e 1239 1264 1 5433
 e 1241 1248 1 5435
 e 1258 1261 1 5437
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 1280 5467
 c 25333
 e 0 738 1 0
@@ -15371,11 +15346,6 @@ e 1244 1274 43 5462
 e 1250 1259 1 5463
 e 1252 1258 1 5464
 e 1265 1276 2 5465
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 160 649
 c 2998
 e 0 90 21 0
@@ -15784,11 +15754,6 @@ e 148 155 1 643
 e 148 150 1 644
 e 151 153 1 646
 e 153 154 1 648
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 160 651
 c 2925
 e 0 36 3 4
@@ -16173,11 +16138,6 @@ e 146 154 1 644
 e 147 155 34 646
 e 149 154 2 647
 e 150 153 1 648
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 160 653
 c 2914
 e 0 67 1 0
@@ -16593,11 +16553,6 @@ e 150 158 2 648
 e 152 155 1 649
 e 156 159 1 651
 e 157 159 1 652
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 160 644
 c 2942
 e 0 135 1 3
@@ -16989,11 +16944,6 @@ e 146 149 1 639
 e 146 155 1 640
 e 150 151 1 642
 e 150 157 1 643
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 160 660
 c 2817
 e 0 63 29 0
@@ -17400,11 +17350,6 @@ e 150 153 34 654
 e 153 155 35 657
 e 153 156 11 658
 e 155 156 21 659
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 2560 10879
 c 48359
 e 0 201 1 1
@@ -23842,11 +23787,6 @@ e 2449 2547 1 10867
 e 2462 2472 1 10870
 e 2478 2520 1 10873
 e 2486 2550 1 10875
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 2560 10894
 c 50499
 e 0 1214 2 0
@@ -30226,11 +30166,6 @@ e 2464 2522 18 10881
 e 2477 2488 46 10884
 e 2481 2540 2 10885
 e 2524 2551 1 10891
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 2560 10877
 c 48024
 e 0 1011 31 0
@@ -36261,11 +36196,6 @@ e 2489 2503 1 10870
 e 2522 2543 17 10874
 e 2539 2543 21 10875
 e 2553 2559 1 10876
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 2560 10873
 c 50896
 e 0 2419 21 0
@@ -42409,11 +42339,6 @@ e 2494 2500 12 10866
 e 2499 2533 1 10868
 e 2500 2511 1 10869
 e 2505 2509 1 10870
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 2560 10917
 c 49490
 e 0 451 1 4
@@ -48680,11 +48605,6 @@ e 2476 2500 1 10908
 e 2489 2497 3 10909
 e 2497 2552 1 10913
 e 2510 2531 11 10914
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 320 1309
 c 5806
 e 0 81 1 0
@@ -49519,11 +49439,6 @@ e 304 308 1 1305
 e 306 307 1 1306
 e 311 316 1 1307
 e 314 317 1 1308
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 320 1307
 c 6039
 e 0 255 1 0
@@ -50370,11 +50285,6 @@ e 305 318 2 1303
 e 306 312 12 1304
 e 309 311 35 1305
 e 315 317 2 1306
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 320 1311
 c 6396
 e 0 194 1 0
@@ -51210,11 +51120,6 @@ e 304 309 1 1306
 e 306 317 11 1308
 e 312 313 1 1309
 e 314 316 1 1310
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 320 1306
 c 5859
 e 0 230 17 0
@@ -52055,11 +51960,6 @@ e 286 305 1 1295
 e 289 302 1 1296
 e 292 315 2 1298
 e 306 311 1 1304
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 320 1311
 c 6300
 e 0 10 1 0
@@ -52922,11 +52822,6 @@ e 290 312 31 1304
 e 299 307 11 1306
 e 309 315 1 1309
 e 313 315 1 1310
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 5120 21775
 c 98663
 e 0 500 1 0
@@ -65325,11 +65220,6 @@ e 5087 5102 1 21771
 e 5088 5105 1 21772
 e 5091 5099 2 21773
 e 5102 5118 1 21774
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 5120 21803
 c 98721
 e 0 4679 1 3
@@ -77952,11 +77842,6 @@ e 5038 5102 1 21795
 e 5047 5079 1 21798
 e 5055 5057 19 21799
 e 5056 5080 1 21800
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 640 2615
 c 13145
 e 0 382 44 0
@@ -79579,11 +79464,6 @@ e 610 636 2 2605
 e 615 620 1 2608
 e 619 636 1 2610
 e 625 630 1 2612
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 640 2636
 c 12451
 e 0 550 1 0
@@ -81238,11 +81118,6 @@ e 607 608 1 2631
 e 610 635 29 2633
 e 616 638 12 2634
 e 635 638 36 2635
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 640 2623
 c 12460
 e 0 462 2 0
@@ -82884,11 +82759,6 @@ e 610 638 21 2616
 e 615 618 2 2618
 e 617 627 2 2619
 e 628 638 46 2621
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 640 2624
 c 12286
 e 0 377 2 0
@@ -84565,11 +84435,6 @@ e 607 621 21 2619
 e 616 630 9 2620
 e 617 638 1 2621
 e 624 638 2 2622
-Executing Decoder <mcortes2>
-Reading data...
-Reading parameters...
-Building BRKGA data and initializing...
-
 p edge 640 2612
 c 12738
 e 0 144 1 0

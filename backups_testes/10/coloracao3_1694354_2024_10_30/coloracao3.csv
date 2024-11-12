@@ -1,0 +1,4 @@
+Instance,Nodes,Edges,Terminals,Valid Solution,Best cost,Num edges cut,Last update iteration,Last update time,Final iteration,Final time,seed
+N5120K320M4N3,5120,21795,480,true,72359,0,1288,599.417,1290,600.344,1694354
+N5120K320M4N4,5120,21810,480,true,74413,0,1265,592.339,1282,600.391,1694354
+N5120K320M4N5,5120,21768,480,true,71430,0,1278,598.234,1282,600.087,1694354

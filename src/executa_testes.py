@@ -32,15 +32,19 @@ from glob import glob
 
 # ["threshold", "coloracao", "kruskal", "kruskalpert", "mcortes", "coloracao2", "threshold2", "coloracao3", "threshold3"]
 DECODERS =  ["coloracao3", "kruskalpert"]
+# DECODERS = ["mcortes2"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
 INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "new2"
+INSTANCES_PATH = DEFAULT_PATH / "data2" / "basic_instances"
 TESTES_PATH = DEFAULT_PATH / "testes"
 EXT_FILE = ".gr"
 
 MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
 CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
 SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
+# SEEDS = ["1328963"]
+
 
 MAX_RUN_TIME = "600"
 
@@ -55,15 +59,9 @@ def execute_tests():
     instances = glob(str(INSTANCES_PATH / f"*{EXT_FILE}"))
     instances.sort()
 
-    instances = [
-      '/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/N5120K320M4N3.gr',
-      '/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/N5120K320M4N4.gr',
-      '/home/ricardo/Downloads/multiway/instances/concentric_inst/new2/N5120K320M4N5.gr'
-    ]
-
     for decoder in DECODERS:
         for seed in SEEDS:
-            folder_test = f"{decoder}_{seed}_{date}"
+            folder_test = f"{decoder}_{date}"
             script = f"{MAIN_FILE_PATH} {seed} {CONFIG_FILE_PATH} {MAX_RUN_TIME} $instance {decoder} $teste"
 
             teste_dir = TESTES_PATH / folder_test
@@ -73,14 +71,16 @@ def execute_tests():
 
             # Executa programa para cada uma das instâncias
             for instance in instances:
-                out_file = str(teste_dir / Path(instance).stem) + ".sol"
+                out_file = str(teste_dir / f"{Path(instance).stem}_{seed}") + ".sol"
                 comando = script.replace("$instance", str(INSTANCES_PATH / instance))
                 comando = comando.replace("$teste", str(TESTES_PATH / folder_test / out_file))
-                # comando = comando + f" > {str(Path(instance).stem) + '.sol'}"
+                # comando = comando + f" > /home/ricardo/Downloads/multiway/data2/complex_ih/{str(Path(instance).stem) + '.sol'}"
+
+                print(f"Instance: {instance}")
                 print(comando)
                 os.system(comando)
-
-            print()
+                print("\n")
+            print("\n")
     print("\n\n\n")
 
 
