@@ -36,14 +36,13 @@ DECODERS =  ["kruskalpert"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
 INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "new2"
-INSTANCES_PATH = DEFAULT_PATH / "data2" / "basic_instances"
+INSTANCES_PATH = DEFAULT_PATH / "data2" / "complex_instances"
 TESTES_PATH = DEFAULT_PATH / "testes"
 EXT_FILE = ".gr"
 
 MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
 CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
-# SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
-SEEDS = ["1884283","1694354","1271039","1887782"]
+SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
 
 
 MAX_RUN_TIME = "600"
@@ -60,18 +59,18 @@ def execute_tests():
     instances.sort()
 
     for decoder in DECODERS:
-        for seed in SEEDS:
-            folder_test = f"{decoder}_{date}"
-            script = f"{MAIN_FILE_PATH} {seed} {CONFIG_FILE_PATH} {MAX_RUN_TIME} $instance {decoder} $teste"
+        folder_test = f"{decoder}_{date}"
 
-            teste_dir = TESTES_PATH / folder_test
-            if not teste_dir.exists():
-                print(f"Criando pasta {folder_test}")
-                teste_dir.mkdir(parents=True)
+        teste_dir = TESTES_PATH / folder_test
+        if not teste_dir.exists():
+            print(f"Criando pasta {folder_test}")
+            teste_dir.mkdir(parents=True)
 
-            # Executa programa para cada uma das instâncias
-            for instance in instances:
+        # Executa programa para cada uma das instâncias
+        for instance in instances:
+            for seed in SEEDS:
                 out_file = str(teste_dir / f"{Path(instance).stem}_{seed}") + ".sol"
+                script = f"{MAIN_FILE_PATH} {seed} {CONFIG_FILE_PATH} {MAX_RUN_TIME} $instance {decoder} $teste"
                 comando = script.replace("$instance", str(INSTANCES_PATH / instance))
                 comando = comando.replace("$teste", str(TESTES_PATH / folder_test / out_file))
                 # comando = comando + f" > /home/ricardo/Downloads/multiway/data2/complex_ih/{str(Path(instance).stem) + '.sol'}"
@@ -80,7 +79,7 @@ def execute_tests():
                 print(comando)
                 os.system(comando)
                 print("\n")
-            print("\n")
+        print("\n\n")
     print("\n\n\n")
 
 
