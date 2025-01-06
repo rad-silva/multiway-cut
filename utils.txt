@@ -21,6 +21,7 @@ for i in $(ls); do cat $i | grep Edges; done
 
 
 ./main_mcp 20 ./config.conf 1 ../instances/concentric_inst/new2/N160K20M4N1.gr coloracao3 ../testes/coloracao3/N160K20M4N1.sol
+./main_mcp 20 ./config.conf 1 ../data2/complex_instances/N1280_M2N_K80_1.gr coloracao3 ../testes/coloracao3/N160K20M4N1.sol
 
 
 ./main_mcp 20 ./config.conf 20 ../instances/concentric_inst/20T/20T6E1.gr mcortes2 ../tetes/20T6E5.sol

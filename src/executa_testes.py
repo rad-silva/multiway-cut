@@ -36,14 +36,14 @@ DECODERS =  ["kruskalpert"]
 
 DEFAULT_PATH = Path("/home/ricardo/Downloads/multiway/")
 INSTANCES_PATH = DEFAULT_PATH / "instances" / "concentric_inst" / "new2"
-INSTANCES_PATH = DEFAULT_PATH / "data2" / "complex_instances"
+INSTANCES_PATH = DEFAULT_PATH / "data2" / "basic_instances"
 TESTES_PATH = DEFAULT_PATH / "testes"
 EXT_FILE = ".gr"
 
 MAIN_FILE_PATH = DEFAULT_PATH / "src" / "main_mcp"
 CONFIG_FILE_PATH = DEFAULT_PATH / "src" / "config.conf"
 SEEDS = ["1328963","1884283","1694354","1271039","1887782"]
-
+SEEDS = ["1884283"]
 
 MAX_RUN_TIME = "600"
 

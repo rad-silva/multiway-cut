@@ -593,7 +593,7 @@ void execute_kruskal_pert(
         // string instance_name = instance_file.substr(instance_file.length() - 9, 6);
         string instance_name = filesystem::path(instance_file).stem().string();
 
-        std::string caminho_arquivo_solucao_isolation = "/home/ricardo/Downloads/multiway/data2/complex_ih/" + instance_name + ".sol";
+        std::string caminho_arquivo_solucao_isolation = "/home/ricardo/Downloads/multiway/data2/basic_ih/" + instance_name + ".sol";
 
         // {
         algorithm.setInitialPopulation(
@@ -1326,7 +1326,7 @@ void execute_coloracao3(
         string instance_name = filesystem::path(instance_file).stem().string();
 
         // string caminho_arquivo_solucao_isolation = "../instances/concentric_sol/isolation_mcortes2/" + instance_name + ".sol";
-        std::string caminho_arquivo_solucao_isolation = "/home/ricardo/Downloads/multiway/data2/complex_ih/" + instance_name + ".sol";
+        std::string caminho_arquivo_solucao_isolation = "/home/ricardo/Downloads/multiway/data2/basic_ih/" + instance_name + ".sol";
 
 
         // {
