@@ -1,27 +1,12 @@
-Comando de compilação
-$ g++-12 -std=c++20 -I brkga_mp_ipr_cpp/brkga_mp_ipr test.cpp -o test > list.txt
+## COMANDO DE EXECUÇÃO
 
-Remover necessidade de utilização de "./"
-export PATH=$PATH:/home/ricardo/Downloads/multiway/src
+>> ./main_mcp 20 ./config.conf 1 ../data2/basic_instances/N160_M2N_K10_1.gr coloracao3 ../testes/N160_M2N_K10_1.sol
 
-comando de execução:
-./main_mcp 20 ./config.conf 10 ../instances/custom/inst01.gr coloracao2 ../testes/coloracao2/inst01.sol
-
-Comando de compilação
-./main_mcp 20 ./config.conf 50 ../instances/inst04.dat single_t 2 ../testes/solution_inst04.dat
-
-Comando para inspeção
-valgrind --leak-check=full ./main_mcp 20 ./config.conf 20 ../instances/inst04.dat cuts ../testes/cuts_inst04.dat > out
-
-for i in $(ls); do cat $i | grep Edges; done
-
-
-./main_mcp 20 ./config.conf 5 ../instances/concentric_inst/20T/20T1E1.gr threshold3  ../tetes/20T1E1.sol[[[[]]]]
+Veja src/main_mcp.cpp para detalhes dos parâmetros
 
 
 
-./main_mcp 20 ./config.conf 1 ../instances/concentric_inst/new2/N160K20M4N1.gr coloracao3 ../testes/coloracao3/N160K20M4N1.sol
-./main_mcp 20 ./config.conf 1 ../data2/complex_instances/N1280_M2N_K80_1.gr coloracao3 ../testes/coloracao3/N160K20M4N1.sol
+## COMANDO PAR AAINSPEÇÃO
 
+valgrind --leak-check=full ./main_mcp 20 ./config.conf 1 ../data2/basic_instances/N160_M2N_K10_1.gr coloracao3 ../testes/N160_M2N_K10_1.sol > out
 
-./main_mcp 20 ./config.conf 20 ../instances/concentric_inst/20T/20T6E1.gr mcortes2 ../tetes/20T6E5.sol

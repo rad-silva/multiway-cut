@@ -32,12 +32,14 @@ O projeto é estruturado da seguinte forma
 
 ```
 .
-├── instances
-│   ├── concentric_gen
-│   ├── concentric_inst
-│   ├── concentric_sol
-│   ├── custom
-│   └── steiner
+├── data2
+│   ├── basic_ih
+│   ├── basic_instances
+│   ├── basic_results
+│   ├── complex_ih
+│   ├── complex_instances
+│   ├── complex_results
+│   └── csvs
 ├── scripts
 ├── src
 │   ├── brkga_mp_ipr
@@ -48,10 +50,7 @@ O projeto é estruturado da seguinte forma
 └── testes
 ```
 
-- **`instances/concentric_gen/`**: Arquivos com parâmetros para geração de instâncias com decaimento exponencial (veja a seção 6.1 do artigo [A local search approximation algorithm for the multiway cut problem](https://www.sciencedirect.com/science/article/pii/S0166218X23002007) para compreensão das instâncias com decaimento exponencial utilizadas como benchmark. O gerador de instâncias foi desenvolvido pelos autores do artigo em linguagem java e pode ser obtido em (https://csd.uwo.ca/~ablochha/MultiwayCut.html) que também contém a implementação de algoritmos para o multiway cut e sua formulação com CPLEX).
-- **`instances/concentric_inst/`**: Conjunto de instâncias geradas separados em pastas por número de terminais (20T/, 40T/ e 60T/) e uma pasta com a união de todos (all/).
-- **`instances/concentric_sol/`**: Solução obtida pela isolation heuristic (via decoder baseado em multiplos cortes 3) para cada uma das instâncias de decaimento exponencial.
-- **`instances/steiner/`**: Conjunto de instâncias do problema Steiner Tree.
+- **`data2/`**: contém instâncias com decaimento exponencial e seus respectivos resultados obtidos com os algoritmos do artigo de referência (veja a seção 6.1 do artigo [A local search approximation algorithm for the multiway cut problem](https://www.sciencedirect.com/science/article/pii/S0166218X23002007) para compreensão das instâncias com decaimento exponencial utilizadas como benchmark. O gerador de instâncias foi desenvolvido pelos autores do artigo em linguagem java e pode ser obtido em (https://csd.uwo.ca/~ablochha/MultiwayCut.html) que também contém a implementação de algoritmos para o multiway cut e sua formulação com CPLEX).
 
 Mais detalhes os arquivos de instâncias são encontrados em seus respectivos diretórios nos arquivos nomeados como `infos.txt`
 
@@ -94,7 +93,7 @@ Abaixo deixamos um exemplo para execução do decoder baseado em coloração de 
 ```
 cd src
 
-./main_mcp 20 ./config.conf 10 ../instances/concentric_inst/20T/20T6E1.gr coloracao3 ../tetes/20T6E5.sol
+./main_mcp 20 ./config.conf 1 ../data2/basic_instances/N160_M2N_K10_1.gr coloracao3 ../testes/N160_M2N_K10_1.sol
 ```
 
 <br>
@@ -110,7 +109,7 @@ O arquivo `src/executa_testes.py` contém um programa python em que você pode e
 python3 apps/executa_testes.py
 ```
 
-Para cada instância será gerada uma subpasta em `testes/` nomeada com o nome do decoder e a data de sua execução **(Atenção!!! executar um mesmo decoder na mesma data com o mesmo conjunto de instâncias sobrescreverá o resultado anterior)**. Para teste (instância) será gerado um arquivo de saída `.sol` contendo as informações da execução e resultados obtidos.
+Para cada instância será gerada uma subpasta em `testes/` nomeada com o nome do decoder e a data de sua execução **(Atenção!!! executar um mesmo decoder na mesma data com o mesmo conjunto de instâncias sobrescreverá o resultado anterior)**. Para cada teste (instância) será gerado um arquivo de saída `.sol` contendo as informações da execução e resultados obtidos.
 
 Você também pode gerar arquivos .csv para cada conjunto de soluções contidas na pasta de testes. Para isso, o arquivo `src/cria_tabela.py` contém um programa python que acessa cada subpastas do diretório `testes/` e cria um arquivo `.csv` onde cada linha corresponde à solução registrada em um arquivo de solução contido na respectiva subpasta. Execute
 
